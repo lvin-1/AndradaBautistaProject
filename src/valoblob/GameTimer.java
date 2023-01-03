@@ -58,6 +58,7 @@ public class GameTimer extends AnimationTimer {
 	void redrawBackgroundImage(){
 		this.gc.clearRect(0, 0, Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT);
 		this.gc.drawImage(background, this.backgroundX, this.backgroundY);
+
 	}
 
 	void renderSprites(){
@@ -107,23 +108,33 @@ public class GameTimer extends AnimationTimer {
 
 
 	private void moveJett(){
+		// -5 and -1595, bounds for the blob to stay in the map
 		if(GameTimer.goLeft){
 			this.jett.setDX(-GameTimer.INITIAL_AGENT_SPEED);
-			this.backgroundX += GameTimer.INITIAL_AGENT_SPEED;
+			if(this.backgroundX < -5){
+				this.backgroundX += GameTimer.INITIAL_AGENT_SPEED;
+			}
 		}else if(GameTimer.goRight){
 			this.jett.setDX(GameTimer.INITIAL_AGENT_SPEED);
-			this.backgroundX -= GameTimer.INITIAL_AGENT_SPEED;
+			if(this.backgroundX > -1595){
+				this.backgroundX -= GameTimer.INITIAL_AGENT_SPEED;
+			}
 		}else if(GameTimer.goUp){
 			this.jett.setDY(-GameTimer.INITIAL_AGENT_SPEED);
-			this.backgroundY += GameTimer.INITIAL_AGENT_SPEED;
+			if(this.backgroundY < -5){
+				this.backgroundY += GameTimer.INITIAL_AGENT_SPEED;
+			}
 		}else if(GameTimer.goDown){
 			this.jett.setDY(GameTimer.INITIAL_AGENT_SPEED);
-			this.backgroundY -= GameTimer.INITIAL_AGENT_SPEED;
+			if(this.backgroundY > -1595){
+				this.backgroundY -= GameTimer.INITIAL_AGENT_SPEED;
+			}
 		}else{
 			this.jett.setDX(0);
 			this.jett.setDY(0);
 		}
 
+		//System.out.println(this.backgroundX +" "+ this.backgroundY);
 		this.jett.move();
 	}
 }
