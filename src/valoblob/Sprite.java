@@ -40,7 +40,7 @@ public class Sprite {
 	}
 
 
-	public boolean collidesWith(Sprite c2){
+	public boolean intersectsWith(Sprite c2){
 		Circle circle1 = this.getBounds();
 		Circle circle2 = c2.getBounds();
 

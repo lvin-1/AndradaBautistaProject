@@ -1,10 +1,17 @@
 package valoblob;
 
 import javafx.scene.image.Image;
+import java.util.Random;
 
 public class Gun extends Sprite{
-	private final static Image FINAL_GUN = new Image("images/vandal.png");
-	Gun(){
-		super(0,0,Gun.FINAL_GUN);
+
+	int randX;
+	int randY;
+	private final static Image FINAL_GUN = new Image("images/vandal.png",10,10,false,false);
+	public final static int FINAL_GUN_SIZE = 10;
+
+	Gun(int xPos, int yPos){
+		super(xPos,yPos,Gun.FINAL_GUN);
+
 	}
 }

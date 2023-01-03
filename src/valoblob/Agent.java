@@ -4,9 +4,11 @@ package valoblob;
 import javafx.scene.image.Image;;
 
 public class Agent extends Sprite {
-	private final static Image FINAL_AGENT_IMAGE = new Image("images/Valorant-Jett.png",40,40,false,false);
-	Agent(){
-		super(400,400,Agent.FINAL_AGENT_IMAGE);
+	public final static int INITIAL_MAIN_POSITION = 400;
+	public final static int INITIAL_AGENT_SIZE = 40;
+
+	Agent(int xPos, int yPos, Image image){
+		super(xPos,yPos,image);
 	}
 
 	void move(){
@@ -17,5 +19,9 @@ public class Agent extends Sprite {
 		if(this.yPos+this.dy >= 0 && this.yPos+this.dy <= Game.WINDOW_WIDTH-this.size){
 			this.yPos += this.dy;
 		}
+	}
+
+	void increaseSize(int size){
+		this.size += size;
 	}
 }

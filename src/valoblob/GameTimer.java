@@ -15,6 +15,7 @@ import java.util.Random;
 public class GameTimer extends AnimationTimer {
 	private long startSpawn;
 	private long startMove;
+	private boolean spawned = false;
 	private GraphicsContext gc;
 	private Scene scene;
 	private Jett jett;
@@ -29,12 +30,12 @@ public class GameTimer extends AnimationTimer {
 	private double backgroundY = -800;
 	private Image background = new Image("images/bg2.png",2400,2400,false,false);
 
-	public final static int FOOD_COUNT = 50;
+	public final static int GUN_COUNT = 50;
 	public final static int INITIAL_NEON_COUNT = 10;
 	public final static int INITIAL_AGENT_SPEED = 120/40;
 	public final static int INITIAL_AGENT_SIZE = 40;
 	public final static int POWERUP_SPAWN_DELAY = 10; //seconds
-
+	public final static int MAP_SIZE = 2400;
 
 	GameTimer(Scene scene, GraphicsContext gc){
 		this.gc = gc;
@@ -51,8 +52,10 @@ public class GameTimer extends AnimationTimer {
 	public void handle(long currentNanoTime){
 		this.redrawBackgroundImage();
 
+		this.spawnGuns();
 		this.renderSprites();
 		this.moveSprites();
+		this.checkBlobIntersection();
 	}
 
 	void redrawBackgroundImage(){
@@ -62,6 +65,11 @@ public class GameTimer extends AnimationTimer {
 	}
 
 	void renderSprites(){
+
+		for(Gun gun : this.guns){
+			gun.render(this.gc);
+		}
+
 		this.jett.render(this.gc);
 	}
 
@@ -136,5 +144,34 @@ public class GameTimer extends AnimationTimer {
 
 		//System.out.println(this.backgroundX +" "+ this.backgroundY);
 		this.jett.move();
+	}
+
+
+	private void checkBlobIntersection(){
+		for(int i = 0; i < GameTimer.GUN_COUNT; i++){
+			Gun gun = this.guns.get(i);
+			if(gun.intersectsWith(this.jett)){
+				//hardcoded size increase for testing
+				//this.jett.increaseSize(10);
+				//System.out.println("Jett got a gun!");
+				//this.guns.remove(i);
+			}
+		}
+	}
+
+	private void spawnGuns(){
+		if(!this.spawned){
+			int xPos, yPos;
+			Random r = new Random();
+
+			for(int i = 0; i<GameTimer.GUN_COUNT; i++){
+				xPos = r.nextInt(Game.WINDOW_WIDTH);
+				yPos = r.nextInt(Game.WINDOW_HEIGHT);
+				this.guns.add(new Gun(xPos,yPos));
+			}
+			this.spawned = true;
+		}
+
+
 	}
 }
