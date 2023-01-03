@@ -25,7 +25,8 @@ public class GameTimer extends AnimationTimer {
 	private static boolean goRight;
 	private static boolean goUp;
 	private static boolean goDown;
-	private double backgroundY;
+	private double backgroundX = -800;
+	private double backgroundY = -800;
 	private Image background = new Image("images/bg2.png",2400,2400,false,false);
 
 	public final static int FOOD_COUNT = 50;
@@ -56,7 +57,7 @@ public class GameTimer extends AnimationTimer {
 
 	void redrawBackgroundImage(){
 		this.gc.clearRect(0, 0, Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT);
-		this.gc.drawImage(background, 0, 0);
+		this.gc.drawImage(background, this.backgroundX, this.backgroundY);
 	}
 
 	void renderSprites(){
@@ -108,12 +109,16 @@ public class GameTimer extends AnimationTimer {
 	private void moveJett(){
 		if(GameTimer.goLeft){
 			this.jett.setDX(-GameTimer.INITIAL_AGENT_SPEED);
+			this.backgroundX += GameTimer.INITIAL_AGENT_SPEED;
 		}else if(GameTimer.goRight){
 			this.jett.setDX(GameTimer.INITIAL_AGENT_SPEED);
+			this.backgroundX -= GameTimer.INITIAL_AGENT_SPEED;
 		}else if(GameTimer.goUp){
 			this.jett.setDY(-GameTimer.INITIAL_AGENT_SPEED);
+			this.backgroundY += GameTimer.INITIAL_AGENT_SPEED;
 		}else if(GameTimer.goDown){
 			this.jett.setDY(GameTimer.INITIAL_AGENT_SPEED);
+			this.backgroundY -= GameTimer.INITIAL_AGENT_SPEED;
 		}else{
 			this.jett.setDX(0);
 			this.jett.setDY(0);

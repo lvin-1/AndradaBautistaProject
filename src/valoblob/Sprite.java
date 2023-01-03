@@ -17,6 +17,7 @@ public class Sprite {
 		this.xPos = xPos;
 		this.yPos = yPos;
 		this.loadImage(image);
+		this.setSize();
 		this.visible = true;
 	}
 

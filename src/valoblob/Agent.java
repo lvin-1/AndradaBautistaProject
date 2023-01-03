@@ -4,9 +4,9 @@ package valoblob;
 import javafx.scene.image.Image;;
 
 public class Agent extends Sprite {
-	private final static Image FINAL_AGENT_IMAGE = new Image("images/Valorant-Jett.png");
+	private final static Image FINAL_AGENT_IMAGE = new Image("images/Valorant-Jett.png",40,40,false,false);
 	Agent(){
-		super(0,0,Agent.FINAL_AGENT_IMAGE);
+		super(400,400,Agent.FINAL_AGENT_IMAGE);
 	}
 
 	void move(){
