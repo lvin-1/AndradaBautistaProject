@@ -7,11 +7,19 @@ public class Gun extends Sprite{
 
 	int randX;
 	int randY;
-	private final static Image FINAL_GUN = new Image("images/vandal.png",10,10,false,false);
-	public final static int FINAL_GUN_SIZE = 10;
+	private final static Image FINAL_GUN = new Image("images/vandal.png",20,20,false,false);
+	public final static int FINAL_GUN_SIZE = 20;
 
 	Gun(int xPos, int yPos){
 		super(xPos,yPos,Gun.FINAL_GUN);
 
+	}
+
+	public void xPosSetter(int x){
+		this.xPos = x;
+	}
+
+	public void yPosSetter(int y){
+		this.yPos = y;
 	}
 }

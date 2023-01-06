@@ -28,10 +28,11 @@ public class GameTimer extends AnimationTimer {
 	private static boolean goDown;
 	private double backgroundX = -800;
 	private double backgroundY = -800;
-	private Image background = new Image("images/bg2.png",2400,2400,false,false);
+	private Image background = new Image("images/tryBG.png",2400,2400,false,true);
 
 	public final static int GUN_COUNT = 50;
 	public final static int INITIAL_NEON_COUNT = 10;
+	//testing purposes
 	public final static int INITIAL_AGENT_SPEED = 120/40;
 	public final static int INITIAL_AGENT_SIZE = 40;
 	public final static int POWERUP_SPAWN_DELAY = 10; //seconds
@@ -118,24 +119,32 @@ public class GameTimer extends AnimationTimer {
 	private void moveJett(){
 		// -5 and -1595, bounds for the blob to stay in the map
 		if(GameTimer.goLeft){
-			this.jett.setDX(-GameTimer.INITIAL_AGENT_SPEED);
+
 			if(this.backgroundX < -5){
 				this.backgroundX += GameTimer.INITIAL_AGENT_SPEED;
+			}else{
+				this.jett.setDX(-GameTimer.INITIAL_AGENT_SPEED);
 			}
 		}else if(GameTimer.goRight){
-			this.jett.setDX(GameTimer.INITIAL_AGENT_SPEED);
+
 			if(this.backgroundX > -1595){
 				this.backgroundX -= GameTimer.INITIAL_AGENT_SPEED;
+			}else{
+				this.jett.setDX(GameTimer.INITIAL_AGENT_SPEED);
 			}
 		}else if(GameTimer.goUp){
-			this.jett.setDY(-GameTimer.INITIAL_AGENT_SPEED);
+
 			if(this.backgroundY < -5){
 				this.backgroundY += GameTimer.INITIAL_AGENT_SPEED;
+			}else{
+				this.jett.setDY(-GameTimer.INITIAL_AGENT_SPEED);
 			}
 		}else if(GameTimer.goDown){
-			this.jett.setDY(GameTimer.INITIAL_AGENT_SPEED);
+
 			if(this.backgroundY > -1595){
 				this.backgroundY -= GameTimer.INITIAL_AGENT_SPEED;
+			}else{
+				this.jett.setDY(GameTimer.INITIAL_AGENT_SPEED);
 			}
 		}else{
 			this.jett.setDX(0);
@@ -155,6 +164,17 @@ public class GameTimer extends AnimationTimer {
 				//this.jett.increaseSize(10);
 				//System.out.println("Jett got a gun!");
 				//this.guns.remove(i);
+
+				//GUN RESPAWN to another location in the map
+				Random r = new Random();
+				gun.xPosSetter(r.nextInt(Game.WINDOW_WIDTH));
+				gun.yPosSetter(r.nextInt(Game.WINDOW_HEIGHT));
+				gun.render(this.gc);
+
+				//SIZE INCREASE not working
+				//this.jett.increaseSize(gun.size);
+				//this.jett.render(this.gc);
+
 			}
 		}
 	}

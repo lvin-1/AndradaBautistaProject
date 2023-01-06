@@ -21,7 +21,7 @@ public class Agent extends Sprite {
 		}
 	}
 
-	void increaseSize(int size){
+	void increaseSize(double size){
 		this.size += size;
 	}
 }
