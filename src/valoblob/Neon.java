@@ -8,4 +8,10 @@ public class Neon extends Agent {
 	Neon(int randX, int randY){
 		super(randX, randY, Neon.FINAL_NEON_IMAGE);
 	}
+
+
+	void moveWithJett(){
+		this.xPos += this.dx;
+		this.yPos += this.dy;
+	}
 }

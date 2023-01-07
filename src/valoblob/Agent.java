@@ -4,11 +4,16 @@ package valoblob;
 import javafx.scene.image.Image;;
 
 public class Agent extends Sprite {
-	public final static int INITIAL_MAIN_POSITION = 400;
 	public final static int INITIAL_AGENT_SIZE = 40;
+
 
 	Agent(int xPos, int yPos, Image image){
 		super(xPos,yPos,image);
+	}
+
+
+	double getSpeed(){
+		return 120/this.size;
 	}
 
 	void move(){
@@ -16,7 +21,7 @@ public class Agent extends Sprite {
 			this.xPos += this.dx;
 		}
 
-		if(this.yPos+this.dy >= 0 && this.yPos+this.dy <= Game.WINDOW_WIDTH-this.size){
+		if(this.yPos+this.dy >= 0 && this.yPos+this.dy <= Game.WINDOW_HEIGHT-this.size){
 			this.yPos += this.dy;
 		}
 	}

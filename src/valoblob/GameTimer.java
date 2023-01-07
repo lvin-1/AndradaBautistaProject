@@ -15,7 +15,8 @@ import java.util.Random;
 public class GameTimer extends AnimationTimer {
 	private long startSpawn;
 	private long startMove;
-	private boolean spawned = false;
+	private boolean spawnedGuns = false;
+	private boolean spawnedNeons = false;
 	private GraphicsContext gc;
 	private Scene scene;
 	private Jett jett;
@@ -54,6 +55,7 @@ public class GameTimer extends AnimationTimer {
 		this.redrawBackgroundImage();
 
 		this.spawnGuns();
+		this.spawnNeons();
 		this.renderSprites();
 		this.moveSprites();
 		this.checkBlobIntersection();
@@ -71,11 +73,24 @@ public class GameTimer extends AnimationTimer {
 			gun.render(this.gc);
 		}
 
+		for(Neon neon : this.neons){
+			neon.render(this.gc);
+		}
+
 		this.jett.render(this.gc);
 	}
 
 	void moveSprites(){
 		this.moveJett();
+
+		for(Gun gun : this.guns){
+			gun.move();
+		}
+
+		for(Neon neon : this.neons){
+			//insert random movement here
+			neon.moveWithJett();
+		}
 	}
 
 	private void prepareActionHandlers(){
@@ -121,37 +136,86 @@ public class GameTimer extends AnimationTimer {
 		if(GameTimer.goLeft){
 
 			if(this.backgroundX < -5){
-				this.backgroundX += GameTimer.INITIAL_AGENT_SPEED;
+
+				for(Gun gun: this.guns){
+					gun.setDX(this.jett.getSpeed());
+				}
+
+				for(Neon neon : this.neons){
+					neon.setDX(this.jett.getSpeed());
+				}
+
+				this.backgroundX += this.jett.getSpeed();
+
 			}else{
-				this.jett.setDX(-GameTimer.INITIAL_AGENT_SPEED);
+					this.jett.setDX(-this.jett.getSpeed());
 			}
+
 		}else if(GameTimer.goRight){
 
 			if(this.backgroundX > -1595){
-				this.backgroundX -= GameTimer.INITIAL_AGENT_SPEED;
+
+				for(Gun gun: this.guns){
+					gun.setDX(-this.jett.getSpeed());
+				}
+
+				for(Neon neon : this.neons){
+					neon.setDX(-this.jett.getSpeed());
+				}
+
+				this.backgroundX -= this.jett.getSpeed();
 			}else{
-				this.jett.setDX(GameTimer.INITIAL_AGENT_SPEED);
+				this.jett.setDX(this.jett.getSpeed());
 			}
 		}else if(GameTimer.goUp){
 
 			if(this.backgroundY < -5){
-				this.backgroundY += GameTimer.INITIAL_AGENT_SPEED;
+
+				for(Gun gun: this.guns){
+					gun.setDY(this.jett.getSpeed());
+				}
+
+				for(Neon neon : this.neons){
+					neon.setDY(this.jett.getSpeed());
+				}
+
+				this.backgroundY += this.jett.getSpeed();
 			}else{
-				this.jett.setDY(-GameTimer.INITIAL_AGENT_SPEED);
+				this.jett.setDY(-this.jett.getSpeed());
 			}
 		}else if(GameTimer.goDown){
 
 			if(this.backgroundY > -1595){
-				this.backgroundY -= GameTimer.INITIAL_AGENT_SPEED;
+
+				for(Gun gun: this.guns){
+					gun.setDY(-this.jett.getSpeed());
+				}
+
+				for(Neon neon : this.neons){
+					neon.setDY(-this.jett.getSpeed());
+				}
+
+				this.backgroundY -= this.jett.getSpeed();
 			}else{
-				this.jett.setDY(GameTimer.INITIAL_AGENT_SPEED);
+				this.jett.setDY(this.jett.getSpeed());
 			}
+
 		}else{
+
 			this.jett.setDX(0);
 			this.jett.setDY(0);
+
+			for(Gun gun: this.guns){
+				gun.setDX(0);
+				gun.setDY(0);
+			}
+
+			for(Neon neon : this.neons){
+				neon.setDX(0);
+				neon.setDY(0);
+			}
 		}
 
-		//System.out.println(this.backgroundX +" "+ this.backgroundY);
 		this.jett.move();
 	}
 
@@ -159,39 +223,61 @@ public class GameTimer extends AnimationTimer {
 	private void checkBlobIntersection(){
 		for(int i = 0; i < GameTimer.GUN_COUNT; i++){
 			Gun gun = this.guns.get(i);
-			if(gun.intersectsWith(this.jett)){
-				//hardcoded size increase for testing
-				//this.jett.increaseSize(10);
-				//System.out.println("Jett got a gun!");
-				//this.guns.remove(i);
+			if(this.jett.intersectsWith(gun)){
+				this.jett.increaseSize(gun.size);
+				this.jett.loadImage(new Image("images/Valorant-Jett.png",this.jett.size,this.jett.size,false,false));
+
 
 				//GUN RESPAWN to another location in the map
 				Random r = new Random();
-				gun.xPosSetter(r.nextInt(Game.WINDOW_WIDTH));
-				gun.yPosSetter(r.nextInt(Game.WINDOW_HEIGHT));
+				gun.xPosSetter(r.nextInt(GameTimer.MAP_SIZE));
+				gun.yPosSetter(r.nextInt(GameTimer.MAP_SIZE));
 				gun.render(this.gc);
-
-				//SIZE INCREASE not working
-				//this.jett.increaseSize(gun.size);
-				//this.jett.render(this.gc);
-
 			}
 		}
+
+		for(int j = 0; j < this.neons.size(); j++){
+			Neon neon = this.neons.get(j);
+
+			if(this.jett.size > neon.size && this.jett.intersectsWith(neon)){
+				this.jett.increaseSize(neon.size);
+				this.jett.loadImage(new Image("images/Valorant-Jett.png",this.jett.size,this.jett.size,false,false));
+				this.neons.remove(j);
+			}
+		}
+
 	}
 
 	private void spawnGuns(){
-		if(!this.spawned){
+		if(!this.spawnedGuns){
 			int xPos, yPos;
 			Random r = new Random();
 
 			for(int i = 0; i<GameTimer.GUN_COUNT; i++){
-				xPos = r.nextInt(Game.WINDOW_WIDTH);
-				yPos = r.nextInt(Game.WINDOW_HEIGHT);
+				xPos = r.nextInt(GameTimer.MAP_SIZE);
+				yPos = r.nextInt(GameTimer.MAP_SIZE);
 				this.guns.add(new Gun(xPos,yPos));
 			}
-			this.spawned = true;
+			this.spawnedGuns = true;
 		}
 
 
 	}
+
+	private void spawnNeons(){
+
+		if(!this.spawnedNeons){
+			int xPos, yPos;
+			Random r = new Random();
+
+			for(int i = 0; i<GameTimer.INITIAL_NEON_COUNT; i++){
+				xPos = r.nextInt(GameTimer.MAP_SIZE);
+				yPos = r.nextInt(GameTimer.MAP_SIZE);
+				this.neons.add(new Neon(xPos,yPos));
+			}
+			this.spawnedNeons = true;
+		}
+	}
+
+
 }

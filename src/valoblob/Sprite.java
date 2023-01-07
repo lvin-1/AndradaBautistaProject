@@ -2,7 +2,6 @@ package valoblob;
 
 import javafx.scene.image.Image;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.shape.Circle;
 
 public class Sprite {
@@ -49,7 +48,7 @@ public class Sprite {
 	}
 
 	private Circle getBounds(){
-		return new Circle(this.xPos, this.yPos, this.size);
+		return new Circle(this.xPos, this.yPos, this.size/2);
 	}
 
 	Image getImage(){
