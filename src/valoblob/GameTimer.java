@@ -1,20 +1,26 @@
 package valoblob;
 
 import javafx.animation.AnimationTimer;
+import javafx.animation.PauseTransition;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.util.Duration;
 import javafx.scene.paint.Color;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class GameTimer extends AnimationTimer {
 	private long startSpawn;
 	private long startMove;
+	//Possibly wrong data type
+	private double timeAlive;
 	private boolean spawnedGuns = false;
 	private boolean spawnedNeons = false;
 	private GraphicsContext gc;
@@ -39,6 +45,10 @@ public class GameTimer extends AnimationTimer {
 	public final static int POWERUP_SPAWN_DELAY = 10; //seconds
 	public final static int MAP_SIZE = 2400;
 
+	//For spawning powerups
+	PauseTransition p = new PauseTransition(Duration.seconds(10));
+	PauseTransition p1 = new PauseTransition(Duration.seconds(5));
+
 	GameTimer(Scene scene, GraphicsContext gc){
 		this.gc = gc;
 		this.scene = scene;
@@ -56,9 +66,23 @@ public class GameTimer extends AnimationTimer {
 
 		this.spawnGuns();
 		this.spawnNeons();
+
+		//spawning powerup
+		p.play();
+		p.setOnFinished(event -> this.spawnPowerUp());
+
+		//removing powerup
+		if(!this.powerups.isEmpty()){
+			p1.setOnFinished(event -> this.removePowerup());
+			p1.play();
+		}
+
 		this.renderSprites();
 		this.moveSprites();
 		this.checkBlobIntersection();
+		this.timeAlive = currentNanoTime/100000000;
+		//this.updateTimeAlive(currentNanoTime);
+		this.drawGameStatus();
 	}
 
 	void redrawBackgroundImage(){
@@ -77,6 +101,11 @@ public class GameTimer extends AnimationTimer {
 			neon.render(this.gc);
 		}
 
+		for(Powerup powerup : this.powerups){
+			powerup.render(this.gc);
+		}
+
+
 		this.jett.render(this.gc);
 	}
 
@@ -91,6 +120,11 @@ public class GameTimer extends AnimationTimer {
 			//insert random movement here
 			neon.moveWithJett();
 		}
+
+		for(Powerup powerup : this.powerups){
+			powerup.move();
+		}
+
 	}
 
 	private void prepareActionHandlers(){
@@ -145,6 +179,10 @@ public class GameTimer extends AnimationTimer {
 					neon.setDX(this.jett.getSpeed());
 				}
 
+				for(Powerup powerup : this.powerups){
+					powerup.setDX(this.jett.getSpeed());
+				}
+
 				this.backgroundX += this.jett.getSpeed();
 
 			}else{
@@ -163,6 +201,10 @@ public class GameTimer extends AnimationTimer {
 					neon.setDX(-this.jett.getSpeed());
 				}
 
+				for(Powerup powerup : this.powerups){
+					powerup.setDX(-this.jett.getSpeed());
+				}
+
 				this.backgroundX -= this.jett.getSpeed();
 			}else{
 				this.jett.setDX(this.jett.getSpeed());
@@ -179,6 +221,10 @@ public class GameTimer extends AnimationTimer {
 					neon.setDY(this.jett.getSpeed());
 				}
 
+				for(Powerup powerup : this.powerups){
+					powerup.setDY(this.jett.getSpeed());
+				}
+
 				this.backgroundY += this.jett.getSpeed();
 			}else{
 				this.jett.setDY(-this.jett.getSpeed());
@@ -193,6 +239,10 @@ public class GameTimer extends AnimationTimer {
 
 				for(Neon neon : this.neons){
 					neon.setDY(-this.jett.getSpeed());
+				}
+
+				for(Powerup powerup : this.powerups){
+					powerup.setDY(-this.jett.getSpeed());
 				}
 
 				this.backgroundY -= this.jett.getSpeed();
@@ -214,6 +264,11 @@ public class GameTimer extends AnimationTimer {
 				neon.setDX(0);
 				neon.setDY(0);
 			}
+
+			for(Powerup powerup : this.powerups){
+				powerup.setDX(0);
+				powerup.setDY(0);
+			}
 		}
 
 		this.jett.move();
@@ -233,6 +288,7 @@ public class GameTimer extends AnimationTimer {
 				gun.xPosSetter(r.nextInt(GameTimer.MAP_SIZE));
 				gun.yPosSetter(r.nextInt(GameTimer.MAP_SIZE));
 				gun.render(this.gc);
+				this.jett.increaseGunsCollected();
 			}
 		}
 
@@ -243,9 +299,22 @@ public class GameTimer extends AnimationTimer {
 				this.jett.increaseSize(neon.size);
 				this.jett.loadImage(new Image("images/Valorant-Jett.png",this.jett.size,this.jett.size,false,false));
 				this.neons.remove(j);
+				this.jett.increaseEnemiesDefetead();
 			}
 		}
 
+		for(int k = 0; k < this.powerups.size(); k++){
+			Powerup powerup = this.powerups.get(k);
+
+			if(this.jett.intersectsWith(powerup)){
+				if(powerup.type == Powerup.IMMUNITY){
+					System.out.println("Jett used cloudburst and is currently immune.");
+				}else{
+					System.out.println("Jett used tailwind and currently has doubled speed.");
+				}
+				this.powerups.clear();
+			}
+		}
 	}
 
 	private void spawnGuns(){
@@ -278,6 +347,65 @@ public class GameTimer extends AnimationTimer {
 			this.spawnedNeons = true;
 		}
 	}
+
+	private void spawnPowerUp(){
+
+		Random r = new Random();
+		int powerupType = r.nextInt(2);
+		int powerupXPos = r.nextInt(Game.WINDOW_WIDTH);
+		int powerupYPos = r.nextInt(Game.WINDOW_HEIGHT);
+
+		if(powerupType == Powerup.IMMUNITY){
+			powerups.add(new Smoke(powerupXPos,powerupYPos,powerupType));
+		}else{
+			powerups.add(new Dash(powerupXPos,powerupYPos,powerupType));
+		}
+
+
+	}
+
+	private void removePowerup(){
+		this.powerups.clear();
+	}
+
+	private void drawGameStatus(){
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		this.gc.setFill(Color.RED);
+		this.gc.fillText("Foods Eaten:", 20, 30);
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+		this.gc.setFill(Color.BLACK);
+		this.gc.fillText(this.jett.getGunsCollected()+"", 170, 35);
+
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		this.gc.setFill(Color.RED);
+		this.gc.fillText("Enemies Defeated:", 250, 30);
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+		this.gc.setFill(Color.BLACK);
+		this.gc.fillText(this.jett.getEnemiesDefeated()+"", 470, 35);
+
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		this.gc.setFill(Color.RED);
+		this.gc.fillText("Current Size:", 550, 30);
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+		this.gc.setFill(Color.BLACK);
+		this.gc.fillText(this.jett.size+"", 700, 35);
+
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		this.gc.setFill(Color.RED);
+		this.gc.fillText("Time Alive:", 20, 60);
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+		this.gc.setFill(Color.BLACK);
+		this.gc.fillText(this.timeAlive+"", 160, 60);
+
+	}
+
+	//Time alive wrong time displayed
+	/*
+	private void updateTimeAlive(long currentNanoTime){
+
+		long convert = TimeUnit.SECONDS.convert(currentNanoTime - this.timeAlive, TimeUnit.NANOSECONDS);
+		this.timeAlive = convert;
+	}*/
 
 
 }

@@ -4,10 +4,18 @@ import javafx.scene.image.Image;
 
 public class Powerup extends Sprite {
 
-	private final static Image FINAL_POWERUP = new Image("images/tailwind.png");
-	public final static int FINAL_POWERUP_SIZE = 10;
+	int type;
+	public final static int SPEED_BOOST = 1;
+	public final static int IMMUNITY = 0;
+	public final static int FINAL_POWERUP_SIZE = 20;
 
-	Powerup(){
-		super(0,0,Powerup.FINAL_POWERUP);
+	Powerup(int xPos, int yPos, int type, Image image){
+		super(xPos,yPos,image);
+		this.type = type;
+	}
+
+	void move(){
+		this.xPos += this.dx;
+		this.yPos += this.dy;
 	}
 }
