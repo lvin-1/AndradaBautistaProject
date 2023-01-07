@@ -7,7 +7,6 @@ import valoblob.*;
 public class ValoBlobApp extends Application{
 
 	public static void main(String[] args){
-		System.out.println("a");
         launch(args);
         System.out.println("?");
     }
