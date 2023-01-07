@@ -11,7 +11,6 @@ public class Agent extends Sprite {
 		super(xPos,yPos,image);
 	}
 
-
 	double getSpeed(){
 		return 120/this.size;
 	}

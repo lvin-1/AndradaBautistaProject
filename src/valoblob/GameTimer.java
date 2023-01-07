@@ -12,6 +12,8 @@ import javafx.util.Duration;
 import javafx.scene.paint.Color;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
+
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +37,7 @@ public class GameTimer extends AnimationTimer {
 	private static boolean goDown;
 	private double backgroundX = -800;
 	private double backgroundY = -800;
-	private Image background = new Image("images/tryBG.png",2400,2400,false,true);
+	private Image background = new Image("images/tryBG.png",2400,2400,false,false);
 
 	public final static int GUN_COUNT = 50;
 	public final static int INITIAL_NEON_COUNT = 10;
@@ -62,6 +64,7 @@ public class GameTimer extends AnimationTimer {
 
 	@Override
 	public void handle(long currentNanoTime){
+
 		this.redrawBackgroundImage();
 
 		this.spawnGuns();
@@ -80,9 +83,15 @@ public class GameTimer extends AnimationTimer {
 		this.renderSprites();
 		this.moveSprites();
 		this.checkBlobIntersection();
-		this.timeAlive = currentNanoTime/100000000;
+
+
+		this.timeAlive = (currentNanoTime -this.timeAlive)/(1_000_000_000);
 		//this.updateTimeAlive(currentNanoTime);
 		this.drawGameStatus();
+
+		if(this.jett.isAlive()){
+			this.stop();
+		}
 	}
 
 	void redrawBackgroundImage(){
@@ -113,11 +122,15 @@ public class GameTimer extends AnimationTimer {
 		this.moveJett();
 
 		for(Gun gun : this.guns){
+			Random r = new Random();
 			gun.move();
 		}
 
 		for(Neon neon : this.neons){
+			Random r = new Random();
 			//insert random movement here
+			neon.setDX(r.nextInt(10));
+			neon.setDY(r.nextInt(10));
 			neon.moveWithJett();
 		}
 
@@ -134,13 +147,17 @@ public class GameTimer extends AnimationTimer {
             public void handle(KeyEvent e)
             {
                 String code = e.getCode().toString();
-                if(code.equals("LEFT")) {
+                if(code.equals("LEFT")|| code.equals("A")) {
+                	System.out.println("Jett has moved left");
                 	GameTimer.goLeft = true;
-                }else if(code.equals("RIGHT")) {
+                }else if(code.equals("RIGHT")|| code.equals("D")) {
+                	System.out.println("Jett has moved right");
                 	GameTimer.goRight = true;
-                }else if(code.equals("UP")){
+                }else if(code.equals("UP")|| code.equals("W")){
+                	System.out.println("Jett has moved up");
                 	GameTimer.goUp = true;
-                }else if(code.equals("DOWN")){
+                }else if(code.equals("DOWN")|| code.equals("S")){
+                	System.out.println("Jett has moved down");
                 	GameTimer.goDown = true;
                 }
 
@@ -150,20 +167,18 @@ public class GameTimer extends AnimationTimer {
 		this.scene.setOnKeyReleased(new EventHandler<KeyEvent>(){
 			public void handle(KeyEvent e){
 				String code = e.getCode().toString();
-                if(code.equals("LEFT")) {
+                if(code.equals("LEFT") || code.equals("A")) {
                 	GameTimer.goLeft = false;
-                }else if(code.equals("RIGHT")) {
+                }else if(code.equals("RIGHT")|| code.equals("D")) {
                 	GameTimer.goRight = false;
-                }else if(code.equals("UP")){
+                }else if(code.equals("UP")|| code.equals("W")){
                 	GameTimer.goUp = false;
-                }else if(code.equals("DOWN")){
+                }else if(code.equals("DOWN")|| code.equals("S")){
                 	GameTimer.goDown = false;
                 }
 			}
 		});
 	}
-
-
 
 	private void moveJett(){
 		// -5 and -1595, bounds for the blob to stay in the map
@@ -184,6 +199,7 @@ public class GameTimer extends AnimationTimer {
 				}
 
 				this.backgroundX += this.jett.getSpeed();
+
 
 			}else{
 					this.jett.setDX(-this.jett.getSpeed());
@@ -279,15 +295,34 @@ public class GameTimer extends AnimationTimer {
 		for(int i = 0; i < GameTimer.GUN_COUNT; i++){
 			Gun gun = this.guns.get(i);
 			if(this.jett.intersectsWith(gun)){
-				this.jett.increaseSize(gun.size);
+				this.jett.increaseSize(10);
 				this.jett.loadImage(new Image("images/Valorant-Jett.png",this.jett.size,this.jett.size,false,false));
 
 
 				//GUN RESPAWN to another location in the map
-				Random r = new Random();
-				gun.xPosSetter(r.nextInt(GameTimer.MAP_SIZE));
-				gun.yPosSetter(r.nextInt(GameTimer.MAP_SIZE));
-				gun.render(this.gc);
+				Random rX = new Random();
+				Random rY = new Random();
+				if (rX.nextInt(1) == 1 && rY.nextInt(1) == 1){
+					gun.xPosSetter(rX.nextInt(GameTimer.MAP_SIZE));
+					gun.yPosSetter(rY.nextInt(GameTimer.MAP_SIZE));
+					gun.render(this.gc);
+				}else if (rX.nextInt(1) == 1 && rY.nextInt(1) == 0){
+					gun.xPosSetter(rX.nextInt(GameTimer.MAP_SIZE));
+					gun.yPosSetter(0-rY.nextInt(GameTimer.MAP_SIZE));
+					gun.render(this.gc);
+				}else if (rX.nextInt(1) == 0 && rY.nextInt(1) == 1){
+					gun.xPosSetter(0-rX.nextInt(GameTimer.MAP_SIZE));
+					gun.yPosSetter(rY.nextInt(GameTimer.MAP_SIZE));
+					gun.render(this.gc);
+				}
+				else{
+					gun.xPosSetter(0-rX.nextInt(GameTimer.MAP_SIZE));
+					gun.yPosSetter(0-rY.nextInt(GameTimer.MAP_SIZE));
+					gun.render(this.gc);
+				}
+//				gun.xPosSetter(r.nextInt(GameTimer.MAP_SIZE));
+//				gun.yPosSetter(r.nextInt(GameTimer.MAP_SIZE));
+//				gun.render(this.gc);
 				this.jett.increaseGunsCollected();
 			}
 		}
@@ -300,8 +335,11 @@ public class GameTimer extends AnimationTimer {
 				this.jett.loadImage(new Image("images/Valorant-Jett.png",this.jett.size,this.jett.size,false,false));
 				this.neons.remove(j);
 				this.jett.increaseEnemiesDefetead();
+			}else{
+				this.jett.die();
 			}
 		}
+
 
 		for(int k = 0; k < this.powerups.size(); k++){
 			Powerup powerup = this.powerups.get(k);

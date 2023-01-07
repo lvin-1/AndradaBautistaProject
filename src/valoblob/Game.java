@@ -65,10 +65,10 @@ public class Game {
     	VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
         vbox.setPadding(new Insets(10));
-        vbox.setSpacing(8);
+        vbox.setSpacing(20);
 
         Button b1 = new Button("New Game");
-        Button b2 = new Button("Instruction");
+        Button b2 = new Button("Instructions");
         Button b3 = new Button("About");
 
 

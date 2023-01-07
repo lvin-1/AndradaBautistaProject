@@ -3,10 +3,12 @@ package valoblob;
 import javafx.scene.image.Image;
 
 public class Jett extends Agent{
-	int gunsCollected;
-	int enemiesDefeted;
-	boolean speedDoubled;
-	boolean hasImmunity;
+
+	private int gunsCollected;
+	private int enemiesDefeted;
+	private boolean speedDoubled;
+	private boolean hasImmunity;
+	private boolean alive;
 	public final static Image FINAL_JETT_IMAGE = new Image("images/Valorant-Jett.png",40,40,false,false);
 	public final static int INITIAL_MAIN_POSITION = 400;
 
@@ -21,6 +23,11 @@ public class Jett extends Agent{
 		}else{
 			return 120/this.size;
 		}
+	}
+
+	boolean isAlive(){
+		if(this.alive) return true;
+		return false;
 	}
 
 	void increaseGunsCollected(){
@@ -45,5 +52,9 @@ public class Jett extends Agent{
 
 	void speedDoubleSet(boolean value){
 		this.speedDoubled = value;
+	}
+
+	void die(){
+		this.alive = false;
 	}
 }
