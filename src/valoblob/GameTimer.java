@@ -71,6 +71,8 @@ public class GameTimer extends AnimationTimer {
 		p.play();
 		p.setOnFinished(event -> this.spawnPowerUp());
 
+		//try push
+
 		//removing powerup
 		if(!this.powerups.isEmpty()){
 			p1.setOnFinished(event -> this.removePowerup());
