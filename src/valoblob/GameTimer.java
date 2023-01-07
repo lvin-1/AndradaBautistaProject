@@ -68,10 +68,8 @@ public class GameTimer extends AnimationTimer {
 		this.spawnNeons();
 
 		//spawning powerup
-		p.play();
 		p.setOnFinished(event -> this.spawnPowerUp());
-
-		//try push
+		p.play();
 
 		//removing powerup
 		if(!this.powerups.isEmpty()){
@@ -308,16 +306,41 @@ public class GameTimer extends AnimationTimer {
 		for(int k = 0; k < this.powerups.size(); k++){
 			Powerup powerup = this.powerups.get(k);
 
+			PauseTransition duration = new PauseTransition(Duration.seconds(5));
+
 			if(this.jett.intersectsWith(powerup)){
 				if(powerup.type == Powerup.IMMUNITY){
 					System.out.println("Jett used cloudburst and is currently immune.");
+					this.jett.loadImage(new Image("images/cloudburst-black.png",this.jett.size,this.jett.size,false,false));
+					this.jett.immunitySet(true);
+					Image normal = new Image ("images/Valorant-Jett.png",this.jett.size,this.jett.size,false,false );
+					duration.setOnFinished(new EventHandler<ActionEvent>(){
+						public void handle(ActionEvent arg0){
+							jett.loadImage(normal);
+							jett.immunitySet(false);
+						}
+					});
+					duration.play();
 				}else{
 					System.out.println("Jett used tailwind and currently has doubled speed.");
+					this.jett.loadImage(new Image("images/tailwind-black.png",this.jett.size,this.jett.size,false,false));
+					this.jett.speedDoubleSet(true);
+					Image normal = new Image ("images/Valorant-Jett.png",this.jett.size,this.jett.size,false,false );
+					duration.setOnFinished(new EventHandler<ActionEvent>(){
+						public void handle(ActionEvent arg0){
+							jett.loadImage(normal);
+							jett.speedDoubleSet(false);
+						}
+					});
+					duration.play();
 				}
+
 				this.powerups.clear();
+
 			}
 		}
 	}
+
 
 	private void spawnGuns(){
 		if(!this.spawnedGuns){
@@ -331,7 +354,6 @@ public class GameTimer extends AnimationTimer {
 			}
 			this.spawnedGuns = true;
 		}
-
 
 	}
 
@@ -362,7 +384,6 @@ public class GameTimer extends AnimationTimer {
 		}else{
 			powerups.add(new Dash(powerupXPos,powerupYPos,powerupType));
 		}
-
 
 	}
 

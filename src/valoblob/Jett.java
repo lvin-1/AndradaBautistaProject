@@ -14,6 +14,15 @@ public class Jett extends Agent{
 		super(Jett.INITIAL_MAIN_POSITION, Jett.INITIAL_MAIN_POSITION, Jett.FINAL_JETT_IMAGE);
 	}
 
+	@Override
+	double getSpeed(){
+		if(this.speedDoubled){
+			return (120/this.size)*2;
+		}else{
+			return 120/this.size;
+		}
+	}
+
 	void increaseGunsCollected(){
 		this.gunsCollected += 1;
 	}
@@ -28,5 +37,13 @@ public class Jett extends Agent{
 
 	int getEnemiesDefeated(){
 		return this.enemiesDefeted;
+	}
+
+	void immunitySet(boolean value){
+		this.hasImmunity = value;
+	}
+
+	void speedDoubleSet(boolean value){
+		this.speedDoubled = value;
 	}
 }
