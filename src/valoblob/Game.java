@@ -56,7 +56,7 @@ public class Game {
     	Canvas canvas = new Canvas(Game.WINDOW_WIDTH,Game.WINDOW_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        Image bg = new Image("images/bg2.png",Game.WINDOW_WIDTH,Game.WINDOW_HEIGHT,false,false);
+        Image bg = new Image("images/bg3.png",Game.WINDOW_WIDTH,Game.WINDOW_HEIGHT,false,false);
         gc.drawImage(bg, 0, 0);
         return canvas;
     }

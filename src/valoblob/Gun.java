@@ -16,6 +16,7 @@ public class Gun extends Sprite{
 	}
 
 	void move(){
+
 		this.xPos += this.dx;
 		this.yPos += this.dy;
 	}

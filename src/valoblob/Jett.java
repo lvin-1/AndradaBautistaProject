@@ -53,6 +53,15 @@ public class Jett extends Agent{
 		this.speedDoubled = value;
 	}
 
+	boolean isImmune(){
+		return this.hasImmunity;
+	}
+
+	boolean speedDoubled(){
+		return this.speedDoubled;
+	}
+
+
 	void die(){
 		this.alive = false;
 	}

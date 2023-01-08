@@ -37,14 +37,13 @@ public class GameTimer extends AnimationTimer {
 	private static boolean goDown;
 	private double backgroundX = -800;
 	private double backgroundY = -800;
-	private Image background = new Image("images/tryBG.png",2400,2400,false,false);
+	private Image background = new Image("images/tryBG.png",GameTimer.MAP_SIZE,GameTimer.MAP_SIZE,false,false);
 
 	public final static int GUN_COUNT = 50;
 	public final static int INITIAL_NEON_COUNT = 10;
-	//testing purposes
-	public final static int INITIAL_AGENT_SPEED = 120/40;
 	public final static int INITIAL_AGENT_SIZE = 40;
 	public final static int POWERUP_SPAWN_DELAY = 10; //seconds
+	public final static int GAME_BOUNDS = 1600;
 	public final static int MAP_SIZE = 2400;
 
 	//For spawning powerups
@@ -123,7 +122,7 @@ public class GameTimer extends AnimationTimer {
 	}
 
 	void moveSprites(long currentNanoTime){
-		this.moveJett();
+
 
 		for(Gun gun : this.guns){
 			gun.move();
@@ -131,7 +130,7 @@ public class GameTimer extends AnimationTimer {
 		Random r = new Random();
 		int i = r.nextInt(this.neons.size());
 		long param = (r.nextInt(10)+2)*(((currentNanoTime - this.startMove)/(1000000000))%(r.nextInt(20)+5));
-		this.neons.get(i).moveRandomly(param);
+		this.neons.get(i).moveRandomly(((currentNanoTime - this.startMove)/(1000000000))%4);
 		for(Neon neon : this.neons){
 
 			/*
@@ -148,6 +147,8 @@ public class GameTimer extends AnimationTimer {
 		for(Powerup powerup : this.powerups){
 			powerup.move();
 		}
+
+		this.moveJett();
 
 	}
 
@@ -195,84 +196,99 @@ public class GameTimer extends AnimationTimer {
 		// -5 and -1595, bounds for the blob to stay in the map
 		if(GameTimer.goLeft){
 
-			if(this.backgroundX < -5){
+			if(this.backgroundX < -5 && this.jett.xPos < Jett.INITIAL_MAIN_POSITION){
 
-				for(Gun gun: this.guns){
-					gun.setDX(this.jett.getSpeed());
+				if(this.jett.xPos > 5){
+					for(Gun gun: this.guns){
+						gun.setDX(this.jett.getSpeed());
+					}
+
+					for(Neon neon : this.neons){
+						neon.setDX(this.jett.getSpeed());
+					}
+
+					for(Powerup powerup : this.powerups){
+						powerup.setDX(this.jett.getSpeed());
+					}
+
+					this.backgroundX += this.jett.getSpeed();
 				}
-
-				for(Neon neon : this.neons){
-					neon.setDX(this.jett.getSpeed());
-				}
-
-				for(Powerup powerup : this.powerups){
-					powerup.setDX(this.jett.getSpeed());
-				}
-
-				this.backgroundX += this.jett.getSpeed();
 
 
 			}else{
 					this.jett.setDX(-this.jett.getSpeed());
+					System.out.println(this.jett.xPos);
 			}
 
 		}else if(GameTimer.goRight){
 
-			if(this.backgroundX > -1595){
+			if(this.backgroundX > -1595 && this.jett.xPos > Jett.INITIAL_MAIN_POSITION){
+				if(this.jett.xPos < 760){
 
-				for(Gun gun: this.guns){
-					gun.setDX(-this.jett.getSpeed());
+					for(Gun gun: this.guns){
+						gun.setDX(-this.jett.getSpeed());
+					}
+
+					for(Neon neon : this.neons){
+						neon.setDX(-this.jett.getSpeed());
+					}
+
+					for(Powerup powerup : this.powerups){
+						powerup.setDX(-this.jett.getSpeed());
+					}
+
+					this.backgroundX -= this.jett.getSpeed();
 				}
 
-				for(Neon neon : this.neons){
-					neon.setDX(-this.jett.getSpeed());
-				}
-
-				for(Powerup powerup : this.powerups){
-					powerup.setDX(-this.jett.getSpeed());
-				}
-
-				this.backgroundX -= this.jett.getSpeed();
 			}else{
 				this.jett.setDX(this.jett.getSpeed());
+				System.out.println(this.jett.xPos);
 			}
 		}else if(GameTimer.goUp){
 
-			if(this.backgroundY < -5){
+			if(this.backgroundY < -5 && this.jett.yPos < Jett.INITIAL_MAIN_POSITION){
 
-				for(Gun gun: this.guns){
-					gun.setDY(this.jett.getSpeed());
+				if(this.jett.yPos > 5){
+
+					for(Gun gun: this.guns){
+						gun.setDY(this.jett.getSpeed());
+					}
+
+					for(Neon neon : this.neons){
+						neon.setDY(this.jett.getSpeed());
+					}
+
+					for(Powerup powerup : this.powerups){
+						powerup.setDY(this.jett.getSpeed());
+					}
+
+					this.backgroundY += this.jett.getSpeed();
 				}
 
-				for(Neon neon : this.neons){
-					neon.setDY(this.jett.getSpeed());
-				}
-
-				for(Powerup powerup : this.powerups){
-					powerup.setDY(this.jett.getSpeed());
-				}
-
-				this.backgroundY += this.jett.getSpeed();
 			}else{
 				this.jett.setDY(-this.jett.getSpeed());
+				System.out.println(this.jett.yPos);
 			}
 		}else if(GameTimer.goDown){
 
-			if(this.backgroundY > -1595){
+			if(this.backgroundY > -1595 && this.jett.yPos > Jett.INITIAL_MAIN_POSITION){
 
-				for(Gun gun: this.guns){
-					gun.setDY(-this.jett.getSpeed());
+				if(this.jett.yPos < 760){
+					for(Gun gun: this.guns){
+						gun.setDY(-this.jett.getSpeed());
+					}
+
+					for(Neon neon : this.neons){
+						neon.setDY(-this.jett.getSpeed());
+					}
+
+					for(Powerup powerup : this.powerups){
+						powerup.setDY(-this.jett.getSpeed());
+					}
+
+					this.backgroundY -= this.jett.getSpeed();
 				}
 
-				for(Neon neon : this.neons){
-					neon.setDY(-this.jett.getSpeed());
-				}
-
-				for(Powerup powerup : this.powerups){
-					powerup.setDY(-this.jett.getSpeed());
-				}
-
-				this.backgroundY -= this.jett.getSpeed();
 			}else{
 				this.jett.setDY(this.jett.getSpeed());
 			}
@@ -307,8 +323,14 @@ public class GameTimer extends AnimationTimer {
 			Gun gun = this.guns.get(i);
 			if(this.jett.intersectsWith(gun)){
 				this.jett.increaseSize(Agent.FOOD_SIZE_INCREASE);
-				this.jett.loadImage(new Image("images/jett circle.png",this.jett.size,this.jett.size,false,false));
 
+				if(this.jett.isImmune()){
+					this.jett.loadImage(new Image("images/cloudburst-black.png",this.jett.size,this.jett.size,false,false));
+				}else if(this.jett.speedDoubled()){
+					this.jett.loadImage(new Image("images/tailwind-black.png",this.jett.size,this.jett.size,false,false));
+				}else{
+					this.jett.loadImage(new Image("images/jett circle.png",this.jett.size,this.jett.size,false,false));
+				}
 
 				//GUN RESPAWN to another location in the map
 				Random r = new Random();
@@ -316,25 +338,21 @@ public class GameTimer extends AnimationTimer {
 				int rY = r.nextInt(2);
 
 				if (rX == 1 && rY == 1){
-					gun.xPosSetter(r.nextInt(GameTimer.MAP_SIZE));
-					gun.yPosSetter(r.nextInt(GameTimer.MAP_SIZE));
+					gun.xPosSetter(r.nextInt(1000));
+					gun.yPosSetter(r.nextInt(1000));
 				}else if (rX == 1 && rY == 0){
-					gun.xPosSetter(r.nextInt(GameTimer.MAP_SIZE));
-					gun.yPosSetter(0-r.nextInt(GameTimer.MAP_SIZE));
+					gun.xPosSetter(r.nextInt(1000));
+					gun.yPosSetter(0-r.nextInt(1000));
 				}else if (rX == 0 && rY == 1){
-					gun.xPosSetter(0-r.nextInt(GameTimer.MAP_SIZE));
-					gun.yPosSetter(r.nextInt(GameTimer.MAP_SIZE));
+					gun.xPosSetter(0-r.nextInt(1000));
+					gun.yPosSetter(r.nextInt(1000));
 				}
 				else{
-					gun.xPosSetter(0-r.nextInt(GameTimer.MAP_SIZE));
-					gun.yPosSetter(0-r.nextInt(GameTimer.MAP_SIZE));
+					gun.xPosSetter(0-r.nextInt(1000));
+					gun.yPosSetter(0-r.nextInt(1000));
 				}
 				gun.render(this.gc);
 				this.jett.increaseGunsCollected();
-
-//				gun.xPosSetter(r.nextInt(GameTimer.MAP_SIZE));
-//				gun.yPosSetter(r.nextInt(GameTimer.MAP_SIZE));
-//				gun.render(this.gc);
 			}
 		}
 
@@ -343,11 +361,21 @@ public class GameTimer extends AnimationTimer {
 
 			if(this.jett.size > neon.size && this.jett.intersectsWith(neon)){
 				this.jett.increaseSize(neon.size);
-				this.jett.loadImage(new Image("images/jett circle.png",this.jett.size,this.jett.size,false,false));
+
+				if(this.jett.isImmune()){
+					this.jett.loadImage(new Image("images/cloudburst-black.png",this.jett.size,this.jett.size,false,false));
+				}else if(this.jett.speedDoubled()){
+					this.jett.loadImage(new Image("images/tailwind-black.png",this.jett.size,this.jett.size,false,false));
+				}else{
+					this.jett.loadImage(new Image("images/jett circle.png",this.jett.size,this.jett.size,false,false));
+				}
+
 				this.neons.remove(j);
 				this.jett.increaseEnemiesDefetead();
 			}else{
-				this.jett.die();
+				if(!this.jett.isImmune()){
+					this.jett.die();
+				}
 			}
 		}
 
@@ -391,28 +419,29 @@ public class GameTimer extends AnimationTimer {
 
 	private void spawnGuns(){
 		if(!this.spawnedGuns){
-			int xPos, yPos, xRNP, yRNP, xNP, yNP;
+			int xPos, yPos, rX, rY;
 			Random r = new Random();
 
 			for(int i = 0; i<GameTimer.GUN_COUNT; i++){
 
-				xRNP = r.nextInt(2);
-				yRNP = r.nextInt(2);
+				rX = r.nextInt(2);
+				rY = r.nextInt(2);
 
-				if(xRNP == 0){
-					xNP = 1;
-				}else{
-					xNP = -1;
+				if (rX == 1 && rY == 1){
+					xPos = (r.nextInt(1000));
+					yPos = (r.nextInt(1000));
+				}else if (rX == 1 && rY == 0){
+					xPos = (r.nextInt(1000));
+					yPos = (0-r.nextInt(1000));
+				}else if (rX == 0 && rY == 1){
+					xPos = (0-r.nextInt(1000));
+					yPos = (r.nextInt(1000));
+				}
+				else{
+					xPos = (0-r.nextInt(1000));
+					yPos = (0-r.nextInt(1000));
 				}
 
-				if(yRNP == 0){
-					yNP = 1;
-				}else{
-					yNP = -1;
-				}
-
-				xPos = r.nextInt(GameTimer.MAP_SIZE) * xNP;
-				yPos = r.nextInt(GameTimer.MAP_SIZE) * yNP;
 				this.guns.add(new Gun(xPos,yPos));
 			}
 			this.spawnedGuns = true;
@@ -444,8 +473,8 @@ public class GameTimer extends AnimationTimer {
 				}
 
 
-				xPos = r.nextInt(Game.WINDOW_WIDTH) * xNP;
-				yPos = r.nextInt(Game.WINDOW_HEIGHT) * yNP;
+				xPos = r.nextInt(1000) * xNP;
+				yPos = r.nextInt(1000) * yNP;
 				this.neons.add(new Neon(xPos,yPos));
 			}
 			this.spawnedNeons = true;

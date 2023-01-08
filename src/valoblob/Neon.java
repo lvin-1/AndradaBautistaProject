@@ -58,11 +58,11 @@ public class Neon extends Agent{
 
 	@Override
 	void move(){
-		if(this.xPos+this.dx >= GameTimer.MAP_SIZE && this.xPos+this.dx <= GameTimer.MAP_SIZE-this.size){
+		if(this.xPos+this.dx >= -GameTimer.GAME_BOUNDS && this.xPos+this.dx <= GameTimer.GAME_BOUNDS-this.size){
 			this.xPos += this.dx;
 		}
 
-		if(this.yPos+this.dy >= 0 && this.yPos+this.dy <= Game.WINDOW_HEIGHT-this.size){
+		if(this.yPos+this.dy >= -GameTimer.GAME_BOUNDS && this.yPos+this.dy <= GameTimer.GAME_BOUNDS-this.size){
 			this.yPos += this.dy;
 		}
 	}
