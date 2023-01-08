@@ -19,10 +19,10 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class GameTimer extends AnimationTimer {
-	private long startSpawn;
+	private long startTime;
 	private long startMove;
 	//Possibly wrong data type
-	private double timeAlive;
+	private long timeAlive;
 	private boolean spawnedGuns = false;
 	private boolean spawnedNeons = false;
 	private GraphicsContext gc;
@@ -50,6 +50,9 @@ public class GameTimer extends AnimationTimer {
 	//For spawning powerups
 	PauseTransition p = new PauseTransition(Duration.seconds(10));
 	PauseTransition p1 = new PauseTransition(Duration.seconds(5));
+	//PauseTransition p2 = new PauseTransition();
+
+	Random r = new Random();
 
 	GameTimer(Scene scene, GraphicsContext gc){
 		this.gc = gc;
@@ -58,6 +61,7 @@ public class GameTimer extends AnimationTimer {
 		this.neons = new ArrayList<Neon>();
 		this.guns = new ArrayList<Gun>();
 		this.powerups = new ArrayList<Powerup>();
+		this.startTime = this.startMove = System.nanoTime();
 		this.prepareActionHandlers();
 	}
 
@@ -81,11 +85,11 @@ public class GameTimer extends AnimationTimer {
 		}
 
 		this.renderSprites();
-		this.moveSprites();
+		this.moveSprites(currentNanoTime);
 		this.checkBlobIntersection();
 
 
-		this.timeAlive = (currentNanoTime -this.timeAlive)/(1_000_000_000);
+		this.timeAlive = (currentNanoTime - this.startTime)/(1_000_000_000);
 		//this.updateTimeAlive(currentNanoTime);
 		this.drawGameStatus();
 
@@ -118,19 +122,21 @@ public class GameTimer extends AnimationTimer {
 		this.jett.render(this.gc);
 	}
 
-	void moveSprites(){
+	void moveSprites(long currentNanoTime){
 		this.moveJett();
 
 		for(Gun gun : this.guns){
-			Random r = new Random();
 			gun.move();
 		}
 
 		for(Neon neon : this.neons){
-			Random r = new Random();
-			//insert random movement here
-			neon.setDX(r.nextInt(10));
-			neon.setDY(r.nextInt(10));
+			/*
+			if(!neon.getMoving()){
+				neon.moveRandomly();
+			}*/
+			//neon.moveRandomly();
+			neon.moveRandomly(((currentNanoTime - this.startMove)/(1000000000))%4);
+
 			neon.moveWithJett();
 		}
 
@@ -148,16 +154,16 @@ public class GameTimer extends AnimationTimer {
             {
                 String code = e.getCode().toString();
                 if(code.equals("LEFT")|| code.equals("A")) {
-                	System.out.println("Jett has moved left");
+                	//System.out.println("Jett has moved left");
                 	GameTimer.goLeft = true;
                 }else if(code.equals("RIGHT")|| code.equals("D")) {
-                	System.out.println("Jett has moved right");
+                	//System.out.println("Jett has moved right");
                 	GameTimer.goRight = true;
                 }else if(code.equals("UP")|| code.equals("W")){
-                	System.out.println("Jett has moved up");
+                	//System.out.println("Jett has moved up");
                 	GameTimer.goUp = true;
                 }else if(code.equals("DOWN")|| code.equals("S")){
-                	System.out.println("Jett has moved down");
+                	//System.out.println("Jett has moved down");
                 	GameTimer.goDown = true;
                 }
 
@@ -295,35 +301,35 @@ public class GameTimer extends AnimationTimer {
 		for(int i = 0; i < GameTimer.GUN_COUNT; i++){
 			Gun gun = this.guns.get(i);
 			if(this.jett.intersectsWith(gun)){
-				this.jett.increaseSize(10);
+				this.jett.increaseSize(Agent.FOOD_SIZE_INCREASE);
 				this.jett.loadImage(new Image("images/Valorant-Jett.png",this.jett.size,this.jett.size,false,false));
 
 
 				//GUN RESPAWN to another location in the map
-				Random rX = new Random();
-				Random rY = new Random();
-				if (rX.nextInt(1) == 1 && rY.nextInt(1) == 1){
-					gun.xPosSetter(rX.nextInt(GameTimer.MAP_SIZE));
-					gun.yPosSetter(rY.nextInt(GameTimer.MAP_SIZE));
-					gun.render(this.gc);
-				}else if (rX.nextInt(1) == 1 && rY.nextInt(1) == 0){
-					gun.xPosSetter(rX.nextInt(GameTimer.MAP_SIZE));
-					gun.yPosSetter(0-rY.nextInt(GameTimer.MAP_SIZE));
-					gun.render(this.gc);
-				}else if (rX.nextInt(1) == 0 && rY.nextInt(1) == 1){
-					gun.xPosSetter(0-rX.nextInt(GameTimer.MAP_SIZE));
-					gun.yPosSetter(rY.nextInt(GameTimer.MAP_SIZE));
-					gun.render(this.gc);
+				Random r = new Random();
+				int rX = r.nextInt(2);
+				int rY = r.nextInt(2);
+
+				if (rX == 1 && rY == 1){
+					gun.xPosSetter(r.nextInt(GameTimer.MAP_SIZE));
+					gun.yPosSetter(r.nextInt(GameTimer.MAP_SIZE));
+				}else if (rX == 1 && rY == 0){
+					gun.xPosSetter(r.nextInt(GameTimer.MAP_SIZE));
+					gun.yPosSetter(0-r.nextInt(GameTimer.MAP_SIZE));
+				}else if (rX == 0 && rY == 1){
+					gun.xPosSetter(0-r.nextInt(GameTimer.MAP_SIZE));
+					gun.yPosSetter(r.nextInt(GameTimer.MAP_SIZE));
 				}
 				else{
-					gun.xPosSetter(0-rX.nextInt(GameTimer.MAP_SIZE));
-					gun.yPosSetter(0-rY.nextInt(GameTimer.MAP_SIZE));
-					gun.render(this.gc);
+					gun.xPosSetter(0-r.nextInt(GameTimer.MAP_SIZE));
+					gun.yPosSetter(0-r.nextInt(GameTimer.MAP_SIZE));
 				}
+				gun.render(this.gc);
+				this.jett.increaseGunsCollected();
+
 //				gun.xPosSetter(r.nextInt(GameTimer.MAP_SIZE));
 //				gun.yPosSetter(r.nextInt(GameTimer.MAP_SIZE));
 //				gun.render(this.gc);
-				this.jett.increaseGunsCollected();
 			}
 		}
 
@@ -351,10 +357,9 @@ public class GameTimer extends AnimationTimer {
 					System.out.println("Jett used cloudburst and is currently immune.");
 					this.jett.loadImage(new Image("images/cloudburst-black.png",this.jett.size,this.jett.size,false,false));
 					this.jett.immunitySet(true);
-					Image normal = new Image ("images/Valorant-Jett.png",this.jett.size,this.jett.size,false,false );
 					duration.setOnFinished(new EventHandler<ActionEvent>(){
 						public void handle(ActionEvent arg0){
-							jett.loadImage(normal);
+							jett.loadImage(new Image ("images/Valorant-Jett.png",jett.size,jett.size,false,false));
 							jett.immunitySet(false);
 						}
 					});
@@ -363,10 +368,9 @@ public class GameTimer extends AnimationTimer {
 					System.out.println("Jett used tailwind and currently has doubled speed.");
 					this.jett.loadImage(new Image("images/tailwind-black.png",this.jett.size,this.jett.size,false,false));
 					this.jett.speedDoubleSet(true);
-					Image normal = new Image ("images/Valorant-Jett.png",this.jett.size,this.jett.size,false,false );
 					duration.setOnFinished(new EventHandler<ActionEvent>(){
 						public void handle(ActionEvent arg0){
-							jett.loadImage(normal);
+							jett.loadImage(new Image ("images/Valorant-Jett.png",jett.size,jett.size,false,false));
 							jett.speedDoubleSet(false);
 						}
 					});
@@ -382,12 +386,28 @@ public class GameTimer extends AnimationTimer {
 
 	private void spawnGuns(){
 		if(!this.spawnedGuns){
-			int xPos, yPos;
+			int xPos, yPos, xRNP, yRNP, xNP, yNP;
 			Random r = new Random();
 
 			for(int i = 0; i<GameTimer.GUN_COUNT; i++){
-				xPos = r.nextInt(GameTimer.MAP_SIZE);
-				yPos = r.nextInt(GameTimer.MAP_SIZE);
+
+				xRNP = r.nextInt(2);
+				yRNP = r.nextInt(2);
+
+				if(xRNP == 0){
+					xNP = 1;
+				}else{
+					xNP = -1;
+				}
+
+				if(yRNP == 0){
+					yNP = 1;
+				}else{
+					yNP = -1;
+				}
+
+				xPos = r.nextInt(GameTimer.MAP_SIZE) * xNP;
+				yPos = r.nextInt(GameTimer.MAP_SIZE) * yNP;
 				this.guns.add(new Gun(xPos,yPos));
 			}
 			this.spawnedGuns = true;
@@ -398,12 +418,31 @@ public class GameTimer extends AnimationTimer {
 	private void spawnNeons(){
 
 		if(!this.spawnedNeons){
-			int xPos, yPos;
+			int xPos, yPos, xRNP, yRNP, xNP, yNP;
 			Random r = new Random();
 
+
+
 			for(int i = 0; i<GameTimer.INITIAL_NEON_COUNT; i++){
-				xPos = r.nextInt(GameTimer.MAP_SIZE);
-				yPos = r.nextInt(GameTimer.MAP_SIZE);
+
+				xRNP = r.nextInt(2);
+				yRNP = r.nextInt(2);
+
+				if(xRNP == 0){
+					xNP = 1;
+				}else{
+					xNP = -1;
+				}
+
+				if(yRNP == 0){
+					yNP = 1;
+				}else{
+					yNP = -1;
+				}
+
+
+				xPos = r.nextInt(Game.WINDOW_WIDTH) * xNP;
+				yPos = r.nextInt(Game.WINDOW_HEIGHT) * yNP;
 				this.neons.add(new Neon(xPos,yPos));
 			}
 			this.spawnedNeons = true;
@@ -459,14 +498,5 @@ public class GameTimer extends AnimationTimer {
 		this.gc.fillText(this.timeAlive+"", 160, 60);
 
 	}
-
-	//Time alive wrong time displayed
-	/*
-	private void updateTimeAlive(long currentNanoTime){
-
-		long convert = TimeUnit.SECONDS.convert(currentNanoTime - this.timeAlive, TimeUnit.NANOSECONDS);
-		this.timeAlive = convert;
-	}*/
-
 
 }

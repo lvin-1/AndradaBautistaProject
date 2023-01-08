@@ -26,8 +26,7 @@ public class Jett extends Agent{
 	}
 
 	boolean isAlive(){
-		if(this.alive) return true;
-		return false;
+		return this.alive;
 	}
 
 	void increaseGunsCollected(){

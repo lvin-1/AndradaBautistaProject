@@ -5,7 +5,7 @@ import javafx.scene.image.Image;;
 
 public class Agent extends Sprite {
 	public final static int INITIAL_AGENT_SIZE = 40;
-
+	public final static int FOOD_SIZE_INCREASE = 10;
 
 	Agent(int xPos, int yPos, Image image){
 		super(xPos,yPos,image);
