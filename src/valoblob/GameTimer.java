@@ -128,17 +128,22 @@ public class GameTimer extends AnimationTimer {
 		for(Gun gun : this.guns){
 			gun.move();
 		}
-
+		Random r = new Random();
+		int i = r.nextInt(this.neons.size());
+		long param = (r.nextInt(10)+2)*(((currentNanoTime - this.startMove)/(1000000000))%(r.nextInt(20)+5));
+		this.neons.get(i).moveRandomly(param);
 		for(Neon neon : this.neons){
+
 			/*
 			if(!neon.getMoving()){
 				neon.moveRandomly();
 			}*/
 			//neon.moveRandomly();
-			neon.moveRandomly(((currentNanoTime - this.startMove)/(1000000000))%4);
+			//neon.moveRandomly(((currentNanoTime - this.startMove)/(1000000000))%4);
 
 			neon.moveWithJett();
 		}
+
 
 		for(Powerup powerup : this.powerups){
 			powerup.move();
@@ -359,7 +364,7 @@ public class GameTimer extends AnimationTimer {
 					this.jett.immunitySet(true);
 					duration.setOnFinished(new EventHandler<ActionEvent>(){
 						public void handle(ActionEvent arg0){
-							jett.loadImage(new Image ("images/Valorant-Jett.png",jett.size,jett.size,false,false));
+							jett.loadImage(new Image ("images/jett circle.png",jett.size,jett.size,false,false));
 							jett.immunitySet(false);
 						}
 					});
@@ -370,7 +375,7 @@ public class GameTimer extends AnimationTimer {
 					this.jett.speedDoubleSet(true);
 					duration.setOnFinished(new EventHandler<ActionEvent>(){
 						public void handle(ActionEvent arg0){
-							jett.loadImage(new Image ("images/Valorant-Jett.png",jett.size,jett.size,false,false));
+							jett.loadImage(new Image ("images/jett circle.png",jett.size,jett.size,false,false));
 							jett.speedDoubleSet(false);
 						}
 					});

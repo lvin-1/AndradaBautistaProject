@@ -15,8 +15,6 @@ public class Neon extends Agent{
 	private final static int DOWN = 4;
 	private boolean moving = false;
 
-
-
 	Neon(int randX, int randY){
 		super(randX, randY, Neon.FINAL_NEON_IMAGE);
 	}
@@ -24,31 +22,38 @@ public class Neon extends Agent{
 
 	void moveRandomly(long d){
 
-		this.setMoving(true);
+		Random r = new Random();
+		int direction = r.nextInt(4)+1;
+		if(direction == Neon.LEFT){
+			this.setDX(this.getSpeed());
+		}else if(direction == Neon.RIGHT){
+			this.setDX(-this.getSpeed());
+		}else if(direction == Neon.UP){
+			this.setDY(-this.getSpeed());
+		}else{
+			this.setDY(this.getSpeed());
+		}
+
+		//this.setMoving(true);
 		//this.setDX(this.getSpeed());
 
 
-		Random r = new Random();
-		int steps = r.nextInt(100 - 50)+50;
-		int direction = r.nextInt(4)+1;
-		for (int i = steps; i > 0; i--){
-			if(direction == Neon.LEFT){
-				this.setDX(this.getSpeed());
-			}else if(direction == Neon.RIGHT){
-				this.setDX(-this.getSpeed());
-			}else if(direction == Neon.UP){
-				this.setDY(-this.getSpeed());
-			}else{
-				this.setDY(this.getSpeed());
-			}
-			steps = r.nextInt(100 - 50)+50;
-		}
+		//		int steps = r.nextInt(100 - 50)+50;
+		//		for (int i = steps; i > 0; i--){
+		//			if(direction == Neon.LEFT){
+		//				this.setDX(this.getSpeed());
+		//			}else if(direction == Neon.RIGHT){
+		//				this.setDX(-this.getSpeed());
+		//			}else if(direction == Neon.UP){
+		//				this.setDY(-this.getSpeed());
+		//			}else{
+		//				this.setDY(this.getSpeed());
+		//			}
+		//			steps = r.nextInt(100 - 50)+50;
+		//		}
 
 
 		this.move();
-
-
-
 	}
 
 	@Override
