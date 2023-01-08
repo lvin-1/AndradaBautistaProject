@@ -302,7 +302,7 @@ public class GameTimer extends AnimationTimer {
 			Gun gun = this.guns.get(i);
 			if(this.jett.intersectsWith(gun)){
 				this.jett.increaseSize(Agent.FOOD_SIZE_INCREASE);
-				this.jett.loadImage(new Image("images/Valorant-Jett.png",this.jett.size,this.jett.size,false,false));
+				this.jett.loadImage(new Image("images/jett circle.png",this.jett.size,this.jett.size,false,false));
 
 
 				//GUN RESPAWN to another location in the map
@@ -338,7 +338,7 @@ public class GameTimer extends AnimationTimer {
 
 			if(this.jett.size > neon.size && this.jett.intersectsWith(neon)){
 				this.jett.increaseSize(neon.size);
-				this.jett.loadImage(new Image("images/Valorant-Jett.png",this.jett.size,this.jett.size,false,false));
+				this.jett.loadImage(new Image("images/jett circle.png",this.jett.size,this.jett.size,false,false));
 				this.neons.remove(j);
 				this.jett.increaseEnemiesDefetead();
 			}else{
@@ -420,8 +420,6 @@ public class GameTimer extends AnimationTimer {
 		if(!this.spawnedNeons){
 			int xPos, yPos, xRNP, yRNP, xNP, yNP;
 			Random r = new Random();
-
-
 
 			for(int i = 0; i<GameTimer.INITIAL_NEON_COUNT; i++){
 

@@ -8,7 +8,7 @@ import javafx.scene.image.Image;
 import javafx.util.Duration;
 
 public class Neon extends Agent{
-	private final static Image FINAL_NEON_IMAGE = new Image("Images/neon.png",40,40,false,false);
+	private final static Image FINAL_NEON_IMAGE = new Image("Images/neon circle.png",40,40,false,false);
 	private final static int LEFT = 1;
 	private final static int RIGHT = 2;
 	private final static int UP = 3;
@@ -22,25 +22,28 @@ public class Neon extends Agent{
 	}
 
 
-	void moveRandomly(long direction){
+	void moveRandomly(long d){
 
 		this.setMoving(true);
 		//this.setDX(this.getSpeed());
 
-		/*
+
 		Random r = new Random();
-		int duration = r.nextInt(20)+1;
+		int steps = r.nextInt(100 - 50)+50;
 		int direction = r.nextInt(4)+1;
-	    */
-		if(direction+1 == Neon.LEFT){
-			this.setDX(-this.getSpeed());
-		}else if(direction+1 == Neon.RIGHT){
-			this.setDX(this.getSpeed());
-		}else if(direction+1 == Neon.UP){
-			this.setDY(-this.getSpeed());
-		}else{
-			this.setDY(this.getSpeed());
+		for (int i = steps; i > 0; i--){
+			if(direction == Neon.LEFT){
+				this.setDX(this.getSpeed());
+			}else if(direction == Neon.RIGHT){
+				this.setDX(-this.getSpeed());
+			}else if(direction == Neon.UP){
+				this.setDY(-this.getSpeed());
+			}else{
+				this.setDY(this.getSpeed());
+			}
+			steps = r.nextInt(100 - 50)+50;
 		}
+
 
 		this.move();
 

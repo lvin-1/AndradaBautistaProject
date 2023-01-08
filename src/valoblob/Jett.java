@@ -9,7 +9,7 @@ public class Jett extends Agent{
 	private boolean speedDoubled;
 	private boolean hasImmunity;
 	private boolean alive;
-	public final static Image FINAL_JETT_IMAGE = new Image("images/Valorant-Jett.png",40,40,false,false);
+	public final static Image FINAL_JETT_IMAGE = new Image("images/jett circle.png",40,40,false,false);
 	public final static int INITIAL_MAIN_POSITION = 400;
 
 	Jett(){
