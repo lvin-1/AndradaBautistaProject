@@ -8,9 +8,12 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.paint.Color;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.time.Instant;
@@ -26,6 +29,12 @@ public class GameTimer extends AnimationTimer {
 	private long timeAlive;
 	private boolean spawnedGuns = false;
 	private boolean spawnedNeons = false;
+
+	private Group root; //game over
+	private Stage stage;
+	private Canvas canvas;
+	private Scene gameOverScene;
+
 	private GraphicsContext gc;
 	private Scene scene;
 	private Jett jett;
@@ -62,6 +71,10 @@ public class GameTimer extends AnimationTimer {
 		this.guns = new ArrayList<Gun>();
 		this.powerups = new ArrayList<Powerup>();
 		this.startTime = this.startMove = System.nanoTime();
+
+		this.root = new Group();
+		this.gameOverScene = new Scene (root);
+		this.canvas = new Canvas (Game.WINDOW_HEIGHT,Game.WINDOW_WIDTH);
 		this.prepareActionHandlers();
 	}
 
@@ -527,10 +540,13 @@ public class GameTimer extends AnimationTimer {
 	}
 
 	private void drawGameOver(){
-		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
-		this.gc.setFill(Color.RED);
-		this.gc.fillText("GAME OVER!", 20, Game.WINDOW_HEIGHT/2);
+		Image gameOver = new Image("images/Game Over.png",Game.WINDOW_WIDTH,Game.WINDOW_HEIGHT,false,false);
+		this.gc.drawImage(gameOver, 0, 0);
 
+		this.root.getChildren().add(canvas);
+		//this.stage.setTitle("Game Over!");
+		this.stage.setScene(this.gameOverScene);
+		this.stage.show();
 	}
 	private void drawGameStatus(){
 		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
