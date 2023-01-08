@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+
 public class GameTimer extends AnimationTimer {
 	private long startTime;
 	private long startMove;
@@ -385,7 +386,6 @@ public class GameTimer extends AnimationTimer {
 
 		for(int j = 0; j < this.neons.size(); j++){
 			Neon neon = this.neons.get(j);
-
 			if(this.jett.size > neon.size && this.jett.intersectsWith(neon)){
 				this.jett.increaseSize(neon.size);
 				if(this.jett.isImmune()){
@@ -397,7 +397,7 @@ public class GameTimer extends AnimationTimer {
 				}
 				this.neons.remove(j);
 				this.jett.increaseEnemiesDefetead();
-			}else if (this.jett.size <= neon.size && this.jett.intersectsWith(neon)){
+			}else if (this.jett.size < neon.size && this.jett.intersectsWith(neon)){
 				if(!this.jett.isImmune()){
 					this.jett.die();
 				}
@@ -525,6 +525,9 @@ public class GameTimer extends AnimationTimer {
 	}
 
 	private void drawGameOver(){
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		this.gc.setFill(Color.RED);
+		this.gc.fillText("GAME OVER!", 20, Game.WINDOW_HEIGHT/2);
 
 	}
 	private void drawGameStatus(){
