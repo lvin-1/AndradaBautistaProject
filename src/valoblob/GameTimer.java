@@ -124,12 +124,14 @@ public class GameTimer extends AnimationTimer {
 	}
 
 	void moveSprites(long currentNanoTime){
-
+		Random r = new Random();
+		int g = r.nextInt(this.guns.size());
+		this.guns.get(g).randomMovement();
 
 		for(Gun gun : this.guns){
 			gun.move();
 		}
-		Random r = new Random();
+
 		int i = r.nextInt(this.neons.size());
 		long param = (r.nextInt(10)+2)*(((currentNanoTime - this.startMove)/(1000000000))%(r.nextInt(20)+5));
 		this.neons.get(i).moveRandomly(((currentNanoTime - this.startMove)/(1000000000))%4);

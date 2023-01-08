@@ -25,13 +25,13 @@ public class Neon extends Agent{
 		Random r = new Random();
 		int direction = r.nextInt(4)+1;
 		if(direction == Neon.LEFT){
-			this.setDX(r.nextInt(20)+1);
+			this.setDX(r.nextInt(10)+1);
 		}else if(direction == Neon.RIGHT){
-			this.setDX(-r.nextInt(20)+1);
+			this.setDX(-r.nextInt(10)+1);
 		}else if(direction == Neon.UP){
-			this.setDY(-r.nextInt(20)+1);
+			this.setDY(-r.nextInt(10)+1);
 		}else{
-			this.setDY(r.nextInt(20)+1);
+			this.setDY(r.nextInt(10)+1);
 		}
 
 		//this.setMoving(true);
