@@ -329,9 +329,9 @@ public class GameTimer extends AnimationTimer {
 				this.jett.increaseSize(Agent.FOOD_SIZE_INCREASE);
 
 				if(this.jett.isImmune()){
-					this.jett.loadImage(new Image("images/cloudburst-black.png",this.jett.size,this.jett.size,false,false));
+					this.jett.loadImage(new Image("images/Immune.png",this.jett.size,this.jett.size,false,false));
 				}else if(this.jett.speedDoubled()){
-					this.jett.loadImage(new Image("images/tailwind-black.png",this.jett.size,this.jett.size,false,false));
+					this.jett.loadImage(new Image("images/Speed.png",this.jett.size,this.jett.size,false,false));
 				}else{
 					this.jett.loadImage(new Image("images/jett circle.png",this.jett.size,this.jett.size,false,false));
 				}
@@ -391,9 +391,9 @@ public class GameTimer extends AnimationTimer {
 			if(this.jett.size > neon.size && this.jett.intersectsWith(neon)){
 				this.jett.increaseSize(neon.size);
 				if(this.jett.isImmune()){
-					this.jett.loadImage(new Image("images/cloudburst-black.png",this.jett.size,this.jett.size,false,false));
+					this.jett.loadImage(new Image("images/Immune.png",this.jett.size,this.jett.size,false,false));
 				}else if(this.jett.speedDoubled()){
-					this.jett.loadImage(new Image("images/tailwind-black.png",this.jett.size,this.jett.size,false,false));
+					this.jett.loadImage(new Image("images/Speed.png",this.jett.size,this.jett.size,false,false));
 				}else{
 					this.jett.loadImage(new Image("images/jett circle.png",this.jett.size,this.jett.size,false,false));
 				}
@@ -414,7 +414,7 @@ public class GameTimer extends AnimationTimer {
 			if(this.jett.intersectsWith(powerup)){
 				if(powerup.type == Powerup.IMMUNITY){
 					System.out.println("Jett used cloudburst and is currently immune.");
-					this.jett.loadImage(new Image("images/cloudburst-black.png",this.jett.size,this.jett.size,false,false));
+					this.jett.loadImage(new Image("images/Immune.png",this.jett.size,this.jett.size,false,false));
 					this.jett.immunitySet(true);
 					duration.setOnFinished(new EventHandler<ActionEvent>(){
 						public void handle(ActionEvent arg0){
@@ -425,7 +425,7 @@ public class GameTimer extends AnimationTimer {
 					duration.play();
 				}else{
 					System.out.println("Jett used tailwind and currently has doubled speed.");
-					this.jett.loadImage(new Image("images/tailwind-black.png",this.jett.size,this.jett.size,false,false));
+					this.jett.loadImage(new Image("images/Speed.png",this.jett.size,this.jett.size,false,false));
 					this.jett.speedDoubleSet(true);
 					duration.setOnFinished(new EventHandler<ActionEvent>(){
 						public void handle(ActionEvent arg0){
