@@ -92,8 +92,9 @@ public class GameTimer extends AnimationTimer {
 		//this.updateTimeAlive(currentNanoTime);
 		this.drawGameStatus();
 
-		if(this.jett.isAlive()){
+		if(!this.jett.isAlive()){
 			this.stop();
+			this.drawGameOver();
 		}
 	}
 
@@ -132,7 +133,6 @@ public class GameTimer extends AnimationTimer {
 		long param = (r.nextInt(10)+2)*(((currentNanoTime - this.startMove)/(1000000000))%(r.nextInt(20)+5));
 		this.neons.get(i).moveRandomly(((currentNanoTime - this.startMove)/(1000000000))%4);
 		for(Neon neon : this.neons){
-
 			/*
 			if(!neon.getMoving()){
 				neon.moveRandomly();
@@ -319,6 +319,7 @@ public class GameTimer extends AnimationTimer {
 
 
 	private void checkBlobIntersection(){
+
 		for(int i = 0; i < GameTimer.GUN_COUNT; i++){
 			Gun gun = this.guns.get(i);
 			if(this.jett.intersectsWith(gun)){
@@ -353,6 +354,32 @@ public class GameTimer extends AnimationTimer {
 				}
 				gun.render(this.gc);
 				this.jett.increaseGunsCollected();
+			}for(int j = 0; j < this.neons.size(); j++){
+				Neon neon = this.neons.get(j);
+				if( neon.size > gun.size && neon.intersectsWith(gun)){
+					neon.increaseSize(Agent.FOOD_SIZE_INCREASE);
+					neon.loadImage(new Image("images/neon circle.png",neon.size,neon.size,false,false));
+					System.out.println("Neon has eaten a food");
+					Random r = new Random();
+					int rX = r.nextInt(2);
+					int rY = r.nextInt(2);
+
+					if (rX == 1 && rY == 1){
+						gun.xPosSetter(r.nextInt(1000));
+						gun.yPosSetter(r.nextInt(1000));
+					}else if (rX == 1 && rY == 0){
+						gun.xPosSetter(r.nextInt(1000));
+						gun.yPosSetter(0-r.nextInt(1000));
+					}else if (rX == 0 && rY == 1){
+						gun.xPosSetter(0-r.nextInt(1000));
+						gun.yPosSetter(r.nextInt(1000));
+					}
+					else{
+						gun.xPosSetter(0-r.nextInt(1000));
+						gun.yPosSetter(0-r.nextInt(1000));
+					}
+					gun.render(this.gc);
+				}
 			}
 		}
 
@@ -361,7 +388,6 @@ public class GameTimer extends AnimationTimer {
 
 			if(this.jett.size > neon.size && this.jett.intersectsWith(neon)){
 				this.jett.increaseSize(neon.size);
-
 				if(this.jett.isImmune()){
 					this.jett.loadImage(new Image("images/cloudburst-black.png",this.jett.size,this.jett.size,false,false));
 				}else if(this.jett.speedDoubled()){
@@ -369,16 +395,14 @@ public class GameTimer extends AnimationTimer {
 				}else{
 					this.jett.loadImage(new Image("images/jett circle.png",this.jett.size,this.jett.size,false,false));
 				}
-
 				this.neons.remove(j);
 				this.jett.increaseEnemiesDefetead();
-			}else{
+			}else if (this.jett.size <= neon.size && this.jett.intersectsWith(neon)){
 				if(!this.jett.isImmune()){
 					this.jett.die();
 				}
 			}
 		}
-
 
 		for(int k = 0; k < this.powerups.size(); k++){
 			Powerup powerup = this.powerups.get(k);
@@ -500,6 +524,9 @@ public class GameTimer extends AnimationTimer {
 		this.powerups.clear();
 	}
 
+	private void drawGameOver(){
+
+	}
 	private void drawGameStatus(){
 		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
 		this.gc.setFill(Color.RED);

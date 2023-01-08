@@ -14,6 +14,7 @@ public class Jett extends Agent{
 
 	Jett(){
 		super(Jett.INITIAL_MAIN_POSITION, Jett.INITIAL_MAIN_POSITION, Jett.FINAL_JETT_IMAGE);
+		this.alive = true;
 	}
 
 	@Override
@@ -60,7 +61,6 @@ public class Jett extends Agent{
 	boolean speedDoubled(){
 		return this.speedDoubled;
 	}
-
 
 	void die(){
 		this.alive = false;
