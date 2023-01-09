@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.paint.Color;
@@ -559,28 +560,28 @@ public class GameTimer extends AnimationTimer {
 
 	}
 	private void drawGameStatus(){
-		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		this.gc.setFont(Font.font("Impact", FontWeight.BOLD, 20));
 		this.gc.setFill(Color.RED);
 		this.gc.fillText("Foods Eaten:", 20, 30);
 		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
 		this.gc.setFill(Color.WHITE);
 		this.gc.fillText(this.jett.getGunsCollected()+"", 170, 35);
 
-		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		this.gc.setFont(Font.font("Impact", FontWeight.BOLD, 20));
 		this.gc.setFill(Color.RED);
 		this.gc.fillText("Enemies Defeated:", 250, 30);
 		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
 		this.gc.setFill(Color.WHITE);
 		this.gc.fillText(this.jett.getEnemiesDefeated()+"", 470, 35);
 
-		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		this.gc.setFont(Font.font("Impact", FontWeight.BOLD, 20));
 		this.gc.setFill(Color.RED);
 		this.gc.fillText("Current Size:", 550, 30);
 		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
 		this.gc.setFill(Color.WHITE);
 		this.gc.fillText(this.jett.size+"", 700, 35);
 
-		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		this.gc.setFont(Font.font("Impact", FontWeight.BOLD, 20));
 		this.gc.setFill(Color.RED);
 		this.gc.fillText("Time Alive:", 20, 60);
 		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
