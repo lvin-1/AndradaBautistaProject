@@ -10,7 +10,9 @@ public class Smoke extends Powerup {
 		super(xPos, yPos, type, Smoke.FINAL_SMOKE);
 	}
 
-	void grantImmunity(){
 
+
+	void grantImmunity(){
+		this.grantPower(this.type);
 	}
 }

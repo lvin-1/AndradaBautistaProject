@@ -20,37 +20,20 @@ public class Neon extends Agent{
 	}
 
 
-	void moveRandomly(long d){
+	void moveRandomly(){
 
 		Random r = new Random();
 		int direction = r.nextInt(4)+1;
+
 		if(direction == Neon.LEFT){
-			this.setDX(r.nextInt(10)+1);
+			this.setDX(this.getSpeed());
 		}else if(direction == Neon.RIGHT){
-			this.setDX(-r.nextInt(10)+1);
+			this.setDX(-this.getSpeed());
 		}else if(direction == Neon.UP){
-			this.setDY(-r.nextInt(10)+1);
+			this.setDY(-this.getSpeed());
 		}else{
-			this.setDY(r.nextInt(10)+1);
+			this.setDY(this.getSpeed());
 		}
-
-		//this.setMoving(true);
-		//this.setDX(this.getSpeed());
-
-
-		//		int steps = r.nextInt(100 - 50)+50;
-		//		for (int i = steps; i > 0; i--){
-		//			if(direction == Neon.LEFT){
-		//				this.setDX(this.getSpeed());
-		//			}else if(direction == Neon.RIGHT){
-		//				this.setDX(-this.getSpeed());
-		//			}else if(direction == Neon.UP){
-		//				this.setDY(-this.getSpeed());
-		//			}else{
-		//				this.setDY(this.getSpeed());
-		//			}
-		//			steps = r.nextInt(100 - 50)+50;
-		//		}
 
 
 		this.move();
@@ -58,11 +41,11 @@ public class Neon extends Agent{
 
 	@Override
 	void move(){
-		if(this.xPos+this.dx >= -GameTimer.GAME_BOUNDS && this.xPos+this.dx <= GameTimer.GAME_BOUNDS-this.size){
+		if(this.xPos+this.dx > -1010 && this.xPos+this.dx < 1010-this.size){
 			this.xPos += this.dx;
 		}
 
-		if(this.yPos+this.dy >= -GameTimer.GAME_BOUNDS && this.yPos+this.dy <= GameTimer.GAME_BOUNDS-this.size){
+		if(this.yPos+this.dy > -1010 && this.yPos+this.dy < 1010-this.size){
 			this.yPos += this.dy;
 		}
 	}

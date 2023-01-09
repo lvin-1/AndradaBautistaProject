@@ -115,6 +115,7 @@ public class Game {
 
 	}
 
+
 	void setInstruction(Stage stage) {
 		this.root = new Group();
 		this.gameScene = new Scene(root);

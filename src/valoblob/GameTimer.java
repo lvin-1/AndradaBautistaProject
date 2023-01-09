@@ -47,7 +47,7 @@ public class GameTimer extends AnimationTimer {
 	private static boolean goDown;
 	private double backgroundX = -800;
 	private double backgroundY = -800;
-	private Image background = new Image("images/tryBG.png",GameTimer.MAP_SIZE,GameTimer.MAP_SIZE,false,false);
+	private Image background = new Image("images/finalBG.png",GameTimer.MAP_SIZE,GameTimer.MAP_SIZE,false,false);
 
 	public final static int GUN_COUNT = 50;
 	public final static int INITIAL_NEON_COUNT = 10;
@@ -138,23 +138,18 @@ public class GameTimer extends AnimationTimer {
 
 	void moveSprites(long currentNanoTime){
 		Random r = new Random();
-		int g = r.nextInt(this.guns.size());
-		this.guns.get(g).randomMovement();
 
 		for(Gun gun : this.guns){
 			gun.move();
 		}
 
-		int i = r.nextInt(this.neons.size());
-		long param = (r.nextInt(10)+2)*(((currentNanoTime - this.startMove)/(1000000000))%(r.nextInt(20)+5));
-		this.neons.get(i).moveRandomly(((currentNanoTime - this.startMove)/(1000000000))%4);
+		if(((currentNanoTime - this.startMove)/1000000000)%(r.nextInt(3)+1) == 0){
+			int i = r.nextInt(this.neons.size());
+			//this.neons.get(i).moveRandomly(((currentNanoTime - this.startMove)/(1000000000))%4);
+			this.neons.get(i).moveRandomly();
+		}
+
 		for(Neon neon : this.neons){
-			/*
-			if(!neon.getMoving()){
-				neon.moveRandomly();
-			}*/
-			//neon.moveRandomly();
-			//neon.moveRandomly(((currentNanoTime - this.startMove)/(1000000000))%4);
 
 			neon.moveWithJett();
 		}
@@ -349,51 +344,18 @@ public class GameTimer extends AnimationTimer {
 					this.jett.loadImage(new Image("images/jett circle.png",this.jett.size,this.jett.size,false,false));
 				}
 
-				//GUN RESPAWN to another location in the map
-				Random r = new Random();
-				int rX = r.nextInt(2);
-				int rY = r.nextInt(2);
-
-				if (rX == 1 && rY == 1){
-					gun.xPosSetter(r.nextInt(1000));
-					gun.yPosSetter(r.nextInt(1000));
-				}else if (rX == 1 && rY == 0){
-					gun.xPosSetter(r.nextInt(1000));
-					gun.yPosSetter(0-r.nextInt(1000));
-				}else if (rX == 0 && rY == 1){
-					gun.xPosSetter(0-r.nextInt(1000));
-					gun.yPosSetter(r.nextInt(1000));
-				}
-				else{
-					gun.xPosSetter(0-r.nextInt(1000));
-					gun.yPosSetter(0-r.nextInt(1000));
-				}
+				gun.respawnToOtherLoc();
 				gun.render(this.gc);
 				this.jett.increaseGunsCollected();
-			}for(int j = 0; j < this.neons.size(); j++){
+			}
+
+			for(int j = 0; j < this.neons.size(); j++){
 				Neon neon = this.neons.get(j);
-				if( neon.size > gun.size && neon.intersectsWith(gun)){
+				if(neon.intersectsWith(gun)){
 					neon.increaseSize(Agent.FOOD_SIZE_INCREASE);
 					neon.loadImage(new Image("images/neon circle.png",neon.size,neon.size,false,false));
 					System.out.println("Neon has eaten a food");
-					Random r = new Random();
-					int rX = r.nextInt(2);
-					int rY = r.nextInt(2);
-
-					if (rX == 1 && rY == 1){
-						gun.xPosSetter(r.nextInt(1000));
-						gun.yPosSetter(r.nextInt(1000));
-					}else if (rX == 1 && rY == 0){
-						gun.xPosSetter(r.nextInt(1000));
-						gun.yPosSetter(0-r.nextInt(1000));
-					}else if (rX == 0 && rY == 1){
-						gun.xPosSetter(0-r.nextInt(1000));
-						gun.yPosSetter(r.nextInt(1000));
-					}
-					else{
-						gun.xPosSetter(0-r.nextInt(1000));
-						gun.yPosSetter(0-r.nextInt(1000));
-					}
+					gun.respawnToOtherLoc();
 					gun.render(this.gc);
 				}
 			}
@@ -417,6 +379,16 @@ public class GameTimer extends AnimationTimer {
 					this.jett.die();
 				}
 			}
+
+			for(int k = 0; k < this.neons.size(); k++){
+				Neon neon2 = this.neons.get(k);
+				if(j != k && neon.intersectsWith(neon2)){
+					neon.increaseSize(neon2.size);
+					neon.loadImage(new Image("images/neon circle.png",neon.size,neon.size,false,false));
+					System.out.println("Neon has eaten another neon");
+					this.neons.remove(k);
+				}
+			}
 		}
 
 		for(int k = 0; k < this.powerups.size(); k++){
@@ -425,25 +397,24 @@ public class GameTimer extends AnimationTimer {
 			PauseTransition duration = new PauseTransition(Duration.seconds(5));
 
 			if(this.jett.intersectsWith(powerup)){
+				powerup.jettSetter(this.jett);
 				if(powerup.type == Powerup.IMMUNITY){
-					System.out.println("Jett used cloudburst and is currently immune.");
 					this.jett.loadImage(new Image("images/Immune.png",this.jett.size,this.jett.size,false,false));
-					this.jett.immunitySet(true);
+					powerup.grantPower(powerup.type);
 					duration.setOnFinished(new EventHandler<ActionEvent>(){
 						public void handle(ActionEvent arg0){
 							jett.loadImage(new Image ("images/jett circle.png",jett.size,jett.size,false,false));
-							jett.immunitySet(false);
+							powerup.removePower();
 						}
 					});
 					duration.play();
 				}else{
-					System.out.println("Jett used tailwind and currently has doubled speed.");
 					this.jett.loadImage(new Image("images/Speed.png",this.jett.size,this.jett.size,false,false));
-					this.jett.speedDoubleSet(true);
+					powerup.grantPower(powerup.type);
 					duration.setOnFinished(new EventHandler<ActionEvent>(){
 						public void handle(ActionEvent arg0){
 							jett.loadImage(new Image ("images/jett circle.png",jett.size,jett.size,false,false));
-							jett.speedDoubleSet(false);
+							powerup.removePower();
 						}
 					});
 					duration.play();
@@ -541,12 +512,37 @@ public class GameTimer extends AnimationTimer {
 
 	private void drawGameOver(){
 		Image gameOver = new Image("images/Game Over.png",Game.WINDOW_WIDTH,Game.WINDOW_HEIGHT,false,false);
+		this.gc.clearRect(0, 0, Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT);
 		this.gc.drawImage(gameOver, 0, 0);
+		//Change layout and fonts Not visible but will use the same variables as the drawGameStatus
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		this.gc.setFill(Color.RED);
+		this.gc.fillText("Foods Eaten:", 20, 30);
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+		this.gc.setFill(Color.RED);
+		this.gc.fillText(this.jett.getGunsCollected()+"", 170, 30);
 
-		this.root.getChildren().add(canvas);
-		//this.stage.setTitle("Game Over!");
-		this.stage.setScene(this.gameOverScene);
-		this.stage.show();
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		this.gc.setFill(Color.RED);
+		this.gc.fillText("Enemies Defeated:", 20, 60);
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+		this.gc.setFill(Color.RED);
+		this.gc.fillText(this.jett.getEnemiesDefeated()+"", 230, 60);
+
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		this.gc.setFill(Color.RED);
+		this.gc.fillText("Size:", 20, 90);
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+		this.gc.setFill(Color.RED);
+		this.gc.fillText(this.jett.size+"", 80, 95);
+
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+		this.gc.setFill(Color.RED);
+		this.gc.fillText("Time Alive:", 20, 120);
+		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+		this.gc.setFill(Color.RED);
+		this.gc.fillText(this.timeAlive+" seconds", 150, 125);
+
 	}
 	private void drawGameStatus(){
 		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));

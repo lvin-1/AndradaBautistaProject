@@ -11,6 +11,6 @@ public class Dash extends Powerup{
 	}
 
 	void doubleSpeed(){
-
+		this.grantPower(this.type);
 	}
 }

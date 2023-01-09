@@ -43,7 +43,18 @@ public class Sprite {
 		Circle circle1 = this.getBounds();
 		Circle circle2 = c2.getBounds();
 
-		return circle1.intersects(circle2.getBoundsInLocal());
+		double dx  = circle2.getCenterX() - circle1.getCenterX();
+		double dy = circle2.getCenterY() - circle1.getCenterY();
+
+		double d = Math.sqrt((dy * dy) + (dx * dx));
+
+		//return (d<Math.abs(circle1.getRadius() - circle2.getRadius()));
+
+		//return circle1.getLayoutBounds().intersects(circle2.getLayoutBounds());
+
+		return circle1.getBoundsInLocal().intersects(circle2.getBoundsInLocal());
+
+		//return circle1.intersects(circle2.getBoundsInLocal());
 
 	}
 
