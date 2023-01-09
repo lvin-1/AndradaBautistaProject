@@ -24,8 +24,8 @@ public class Game {
 	private Group root;
 	private Canvas canvas;
 
-	public final static int WINDOW_WIDTH = 800;
-	public final static int WINDOW_HEIGHT = 800;
+	public final static int WINDOW_WIDTH = 600;
+	public final static int WINDOW_HEIGHT = 600;
 
 
 

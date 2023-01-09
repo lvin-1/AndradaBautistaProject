@@ -233,7 +233,6 @@ public class GameTimer extends AnimationTimer {
 
 			}else{
 					this.jett.setDX(-this.jett.getSpeed());
-					System.out.println(this.jett.xPos);
 			}
 
 		}else if(GameTimer.goRight){
@@ -258,7 +257,6 @@ public class GameTimer extends AnimationTimer {
 
 			}else{
 				this.jett.setDX(this.jett.getSpeed());
-				System.out.println(this.jett.xPos);
 			}
 		}else if(GameTimer.goUp){
 
@@ -283,7 +281,6 @@ public class GameTimer extends AnimationTimer {
 
 			}else{
 				this.jett.setDY(-this.jett.getSpeed());
-				System.out.println(this.jett.yPos);
 			}
 		}else if(GameTimer.goDown){
 
@@ -525,33 +522,34 @@ public class GameTimer extends AnimationTimer {
 				Image gameOver = new Image("images/Game Over.png",Game.WINDOW_WIDTH,Game.WINDOW_HEIGHT,false,false);
 				gc.clearRect(0, 0, Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT);
 				gc.drawImage(gameOver, 0, 0);
+
 				//Change layout and fonts Not visible but will use the same variables as the drawGameStatus
-				gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+				gc.setFont(Font.font("Impact", FontWeight.BOLD, 20));
 				gc.setFill(Color.RED);
 				gc.fillText("Foods Eaten:", 20, 30);
 				gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
-				gc.setFill(Color.RED);
+				gc.setFill(Color.WHITE);
 				gc.fillText(jett.getGunsCollected()+"", 170, 30);
 
-				gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+				gc.setFont(Font.font("Impact", FontWeight.BOLD, 20));
 				gc.setFill(Color.RED);
 				gc.fillText("Enemies Defeated:", 20, 60);
 				gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
-				gc.setFill(Color.RED);
+				gc.setFill(Color.WHITE);
 				gc.fillText(jett.getEnemiesDefeated()+"", 230, 60);
 
-				gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+				gc.setFont(Font.font("Impact", FontWeight.BOLD, 20));
 				gc.setFill(Color.RED);
 				gc.fillText("Size:", 20, 90);
 				gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
-				gc.setFill(Color.RED);
+				gc.setFill(Color.WHITE);
 				gc.fillText(jett.size+"", 80, 95);
 
-				gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+				gc.setFont(Font.font("Impact", FontWeight.BOLD, 20));
 				gc.setFill(Color.RED);
 				gc.fillText("Time Alive:", 20, 120);
 				gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
-				gc.setFill(Color.RED);
+				gc.setFill(Color.WHITE);
 				gc.fillText(timeAlive+" seconds", 150, 125);
 			}
 		});
@@ -565,28 +563,28 @@ public class GameTimer extends AnimationTimer {
 		this.gc.setFill(Color.RED);
 		this.gc.fillText("Foods Eaten:", 20, 30);
 		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
-		this.gc.setFill(Color.BLACK);
+		this.gc.setFill(Color.WHITE);
 		this.gc.fillText(this.jett.getGunsCollected()+"", 170, 35);
 
 		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
 		this.gc.setFill(Color.RED);
 		this.gc.fillText("Enemies Defeated:", 250, 30);
 		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
-		this.gc.setFill(Color.BLACK);
+		this.gc.setFill(Color.WHITE);
 		this.gc.fillText(this.jett.getEnemiesDefeated()+"", 470, 35);
 
 		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
 		this.gc.setFill(Color.RED);
 		this.gc.fillText("Current Size:", 550, 30);
 		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
-		this.gc.setFill(Color.BLACK);
+		this.gc.setFill(Color.WHITE);
 		this.gc.fillText(this.jett.size+"", 700, 35);
 
 		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
 		this.gc.setFill(Color.RED);
 		this.gc.fillText("Time Alive:", 20, 60);
 		this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
-		this.gc.setFill(Color.BLACK);
+		this.gc.setFill(Color.WHITE);
 		this.gc.fillText(this.timeAlive+"", 160, 60);
 
 	}
