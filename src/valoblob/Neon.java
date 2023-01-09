@@ -36,7 +36,6 @@ public class Neon extends Agent{
 		}
 
 
-		this.move();
 	}
 
 	@Override

@@ -143,14 +143,17 @@ public class GameTimer extends AnimationTimer {
 			gun.move();
 		}
 
-		if(((currentNanoTime - this.startMove)/1000000000)%(r.nextInt(3)+1) == 0){
-			int i = r.nextInt(this.neons.size());
-			//this.neons.get(i).moveRandomly(((currentNanoTime - this.startMove)/(1000000000))%4);
+		int i = r.nextInt(this.neons.size());
+		if(((currentNanoTime - this.startMove)/1000000000)%(r.nextInt(4)+1) == 0){
+
 			this.neons.get(i).moveRandomly();
+		}else{
+			this.neons.get(i).setDX(0);
+			this.neons.get(i).setDY(0);
 		}
 
 		for(Neon neon : this.neons){
-
+			neon.move();
 			neon.moveWithJett();
 		}
 
@@ -205,6 +208,7 @@ public class GameTimer extends AnimationTimer {
 
 	private void moveJett(){
 		// -5 and -1595, bounds for the blob to stay in the map
+
 		if(GameTimer.goLeft){
 
 			if(this.backgroundX < -5 && this.jett.xPos < Jett.INITIAL_MAIN_POSITION){
@@ -314,10 +318,11 @@ public class GameTimer extends AnimationTimer {
 				gun.setDY(0);
 			}
 
+			/*
 			for(Neon neon : this.neons){
 				neon.setDX(0);
 				neon.setDY(0);
-			}
+			}*/
 
 			for(Powerup powerup : this.powerups){
 				powerup.setDX(0);
